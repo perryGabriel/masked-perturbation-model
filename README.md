@@ -81,3 +81,33 @@ pytest
 ## Notebook
 
 See `notebooks/paper_example.ipynb` for an end-to-end replication of the paper example.
+
+
+## Chapter-2 FMP extension (numerical demos)
+
+This repo now includes chapter-2 feedback-vulnerability utilities for small-system numerical exploration under explicit threat/access assumptions.
+
+Added modules:
+- `mpmgame.fmp`: contract-system setup (`Gamma`, `P`, attack-map) and measured vulnerabilities.
+- `mpmgame.bounds`: theorem-inspired bound helpers (with assumptions documented in docstrings).
+- `mpmgame.experiments_ch2`: family sweeps (`vary_q`, `vary_alpha`, `vary_access`) and report export.
+- `mpmgame.random_systems`: conservative random-system filtering and bound-ratio data.
+- `mpmgame.design_projection`: projection-inspired finite-dimensional surrogate iterations.
+- `mpmgame.design_lp`: LP-inspired finite-dimensional relaxation via `scipy.optimize.linprog`.
+- `mpmgame.plotting_ch2`: plotting helpers for vulnerability-vs-parameter and design diagnostics.
+
+### Exact vs approximate
+
+- **Exact for static matrices:** `Gamma`, `P=(I-Q)G`, measured full/single-link vulnerability, and matrix-norm calculations.
+- **Approximate / surrogate:** projection and LP design methods are finite-dimensional static relaxations inspired by the chapter notes.
+- **Not a proof engine:** outputs are numerical sanity checks on toy systems only.
+
+### Chapter-2 notebooks
+
+- `notebooks/chapter2_bounds_demo.ipynb`
+- `notebooks/chapter2_design_demo.ipynb`
+
+### Chapter-2 docs
+
+- `docs/chapter2.md` describes assumptions and interpretation.
+

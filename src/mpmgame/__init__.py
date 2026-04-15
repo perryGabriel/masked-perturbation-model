@@ -67,4 +67,72 @@ __all__ = [
     "coordinated_attack_defeats_all",
     "plot_success_bipartite_graph",
     "plot_payoff_heatmap",
+
+    "ContractSystem",
+    "VulnerabilityResult",
+    "build_contract_system",
+    "make_realization",
+    "compute_gamma",
+    "compute_attack_map",
+    "access_matrix",
+    "vulnerability_full",
+    "vulnerability_single_link",
+    "BoundResult",
+    "bound_upper_full",
+    "bound_lower_single_link",
+    "bound_lower_full",
+    "FamilyResult",
+    "family_vary_q",
+    "family_vary_alpha",
+    "family_vary_access",
+    "summarize_experiment_results",
+    "export_report_markdown",
+    "random_bound_experiments",
+    "projection_design",
+    "projection_iteration",
+    "ProjectionDesignResult",
+    "lp_relaxation_design",
+    "LPDesignResult",
+    "plot_vulnerability_vs_parameter",
+    "plot_bound_scatter",
+    "plot_projection_convergence",
+    "plot_design_comparison",
+    "plot_access_model_comparison",
 ]
+
+
+from .fmp import (
+    ContractSystem,
+    VulnerabilityResult,
+    build_contract_system,
+    make_realization,
+    compute_gamma,
+    compute_attack_map,
+    access_matrix,
+    vulnerability_full,
+    vulnerability_single_link,
+)
+from .bounds import (
+    BoundResult,
+    bound_upper_full,
+    bound_lower_single_link,
+    bound_lower_full,
+)
+from .experiments_ch2 import (
+    FamilyResult,
+    family_vary_q,
+    family_vary_alpha,
+    family_vary_access,
+    summarize_experiment_results,
+    export_report_markdown,
+)
+from .random_systems import random_bound_experiments
+from .design_projection import projection_design, projection_iteration, ProjectionDesignResult
+from .design_lp import lp_relaxation_design, LPDesignResult
+from .plotting_ch2 import (
+    plot_vulnerability_vs_parameter,
+    plot_bound_scatter,
+    plot_projection_convergence,
+    plot_design_comparison,
+    plot_access_model_comparison,
+)
