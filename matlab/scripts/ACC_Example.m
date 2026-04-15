@@ -26,32 +26,32 @@ wgrid = logspace(-2, 2, 2001);
 
 wmask_1 = [1 0];    % length q
 rmask_1 = [1 0];    % length p
-[M_d1, Delta_1, wstar_a1, sigmax_a1, info_a1] = process_masks(M, wmask_1, rmask_1, wgrid);
+[M_d1, Delta_1, wstar_a1, sigmax_a1, info_a1] = sgdelta.process_masks(M, wmask_1, rmask_1, wgrid);
 
 wmask_2 = [0 1];    % length q
 rmask_2 = [0 1];    % length p
-[M_d2, Delta_2, wstar_a2, sigmax_a2, info_a2] = process_masks(M, wmask_2, rmask_2, wgrid);
+[M_d2, Delta_2, wstar_a2, sigmax_a2, info_a2] = sgdelta.process_masks(M, wmask_2, rmask_2, wgrid);
 
 wmask_3 = [0 1];    % length q
 rmask_3 = [1 0];    % length p
-[M_d3, Delta_3, wstar_a3, sigmax_a3, info_a3] = process_masks(M, wmask_3, rmask_3, wgrid);
+[M_d3, Delta_3, wstar_a3, sigmax_a3, info_a3] = sgdelta.process_masks(M, wmask_3, rmask_3, wgrid);
 
 
 wmask_1 = [1 1];    % length q
 rmask_1 = [1 0];    % length p
-[M_1, ~, wstar_d1, sigmax_d1, info_d1] = process_masks(M, rmask_1, wmask_1, wgrid);
+[M_1, ~, wstar_d1, sigmax_d1, info_d1] = sgdelta.process_masks(M, rmask_1, wmask_1, wgrid);
 
 wmask_2 = [1 0];    % length q
 rmask_2 = [1 1];    % length p
-[M_2, ~, wstar_d2, sigmax_d2, info_d2] = process_masks(M, rmask_2, wmask_2, wgrid);
+[M_2, ~, wstar_d2, sigmax_d2, info_d2] = sgdelta.process_masks(M, rmask_2, wmask_2, wgrid);
 
 wmask_3 = [0 1];    % length q
 rmask_3 = [1 1];    % length p
-[M_3, ~, wstar_d3, sigmax_d3, info_d3] = process_masks(M, rmask_3, wmask_3, wgrid);
+[M_3, ~, wstar_d3, sigmax_d3, info_d3] = sgdelta.process_masks(M, rmask_3, wmask_3, wgrid);
 
 wmask_4 = [1 0];    % length q
 rmask_4 = [1 0];    % length p
-[M_4, ~, wstar_d4, sigmax_d4, info_d4] = process_masks(M, rmask_4, wmask_4, wgrid);
+[M_4, ~, wstar_d4, sigmax_d4, info_d4] = sgdelta.process_masks(M, rmask_4, wmask_4, wgrid);
 
 % print_info(M_1, Delta_1, wstar_1, sigmax_1, info_1);
 % print_info(M_1, Delta_2, wstar_2, sigmax_2, info_2);
