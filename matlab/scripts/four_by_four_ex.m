@@ -1,3 +1,6 @@
+% four_by_four_ex
+% Build a 4x4 state-space example and extract M = G_rw.
+
 
 A = [-1 0 -1 -3;
     1 -1 -3 3;
@@ -20,7 +23,7 @@ P = ss(A,B,C,D);          % continuous-time by default
 P.InputName  = {'w1','w2','w3','w4'};
 P.OutputName = {'r1','r2','r3','r4'};
 
-[M, ~] = build_M_from_ss(P, idx);       % <-- this M is G_rw
+[M, ~] = sgdelta.build_M_from_ss(P, idx);       % <-- this M is G_rw
 
 
 if false
