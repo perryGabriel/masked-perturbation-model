@@ -1,5 +1,9 @@
-*.asv
-*.m~ 
-*.mat
-*.mlx
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
 .DS_Store
+*.mat
+*.csv
