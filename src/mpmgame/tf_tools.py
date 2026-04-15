@@ -10,6 +10,7 @@ import warnings
 
 import numpy as np
 import control
+from control.exception import ControlMIMONotImplemented
 
 
 TF = control.TransferFunction
@@ -114,15 +115,44 @@ def feedback_resolvent(M: np.ndarray, Delta: np.ndarray) -> control.StateSpace:
         raise ValueError("Expected M shape p×q and Delta shape q×p")
     L = tf_matmul(M, Delta)
     I = eye_tf(L.shape[0])
-    I_sys = to_mimo_tf(I)
-    L_sys = to_mimo_tf(L)
-    closed = control.feedback(I_sys, L_sys, sign=1)
-    return control.ss(closed)
+    # `python-control` does not implement MIMO feedback for TransferFunction
+    # objects in some versions, but the same interconnection works for
+    # StateSpace systems. Convert before closing the loop.
+    I_sys = control.ss(to_mimo_tf(I))
+    L_sys = control.ss(to_mimo_tf(L))
+    return control.feedback(I_sys, L_sys, sign=1)
+
+
+def _tf_det(A: np.ndarray) -> TF:
+    """Determinant of a square transfer-matrix as a SISO transfer function."""
+    if A.ndim != 2 or A.shape[0] != A.shape[1]:
+        raise ValueError("determinant requires a square 2D matrix")
+    n = A.shape[0]
+    if n == 1:
+        return _as_tf(A[0, 0])
+    out = control.tf([0], [1])
+    for j in range(n):
+        minor = np.delete(np.delete(A, 0, axis=0), j, axis=1)
+        cofactor = _tf_det(minor)
+        term = _as_tf(A[0, j]) * cofactor
+        out = out + term if (j % 2 == 0) else out - term
+    return out
 
 
 def poles_of_resolvent(M: np.ndarray, Delta: np.ndarray) -> np.ndarray:
-    sys = feedback_resolvent(M, Delta)
-    return np.asarray(control.poles(sys), dtype=complex)
+    try:
+        sys = feedback_resolvent(M, Delta)
+        return np.asarray(control.poles(sys), dtype=complex)
+    except ControlMIMONotImplemented:
+        # Fallback when python-control lacks MIMO TF->SS support (e.g., no slycot):
+        # poles of (I - MΔ)^(-1) are zeros of det(I - MΔ).
+        L = tf_matmul(M, Delta)
+        C = eye_tf(L.shape[0])
+        for i in range(C.shape[0]):
+            for j in range(C.shape[1]):
+                C[i, j] = C[i, j] - _as_tf(L[i, j])
+        det_char = _tf_det(C)
+        return np.asarray(control.zeros(det_char), dtype=complex)
 
 
 def is_unstable(M: np.ndarray, Delta: np.ndarray, pole_tol: float = 1e-8, near_tol: float = 1e-6) -> bool:
