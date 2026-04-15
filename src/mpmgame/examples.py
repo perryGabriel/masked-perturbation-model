@@ -36,9 +36,12 @@ class PaperExampleData:
 
 def paper_example_data() -> PaperExampleData:
     s = control.tf([1, 0], [1])
-    P = 3 / (3 * s + 1)
-    K = 3 / (3 * s + 10)
-    den = 1 + 8 * P * K
+    one = control.tf([1], [1])
+    zero = control.tf([0], [1])
+
+    P = 3 / (3 * s + one)
+    K = 3 / (3 * s + 10 * one)
+    den = one + 8 * P * K
 
     M = tf_matrix([
         [P / den, (P * K) / den],
@@ -46,16 +49,16 @@ def paper_example_data() -> PaperExampleData:
     ])
 
     d1 = tf_matrix([
-        [(2.8 * s - 1.62) / (s + 0.58), 0],
-        [0, 0],
+        [(2.8 * s - 1.62 * one) / (s + 0.58 * one), zero],
+        [zero, zero],
     ])
     d2 = tf_matrix([
-        [0, 0],
-        [0, (4.7 * s - 0.8) / (s + 0.001)],
+        [zero, zero],
+        [zero, (4.7 * s - 0.8 * one) / (s + 0.001 * one)],
     ])
     d3 = tf_matrix([
-        [0, (-1.2 * s + 0.7) / (s + 0.6)],
-        [0, 0],
+        [zero, (-1.2 * s + 0.7 * one) / (s + 0.6 * one)],
+        [zero, zero],
     ])
 
     attacks = [
@@ -79,7 +82,14 @@ def paper_example_data() -> PaperExampleData:
     c_w = np.array([2, 1], dtype=float)
     budget = 2.0
 
-    return PaperExampleData(M=M, attacks=attacks, defenses=defenses, c_r=c_r, c_w=c_w, budget=budget)
+    return PaperExampleData(
+        M=M,
+        attacks=attacks,
+        defenses=defenses,
+        c_r=c_r,
+        c_w=c_w,
+        budget=budget,
+    )
 
 
 def run_paper_example() -> GameResult:
