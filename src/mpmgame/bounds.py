@@ -37,7 +37,7 @@ def bound_upper_full(system: ContractSystem, Pbar: np.ndarray, Cbar: np.ndarray 
         exact_for_static=True,
     )
 
-
+# Gabriel Perry's lower bound
 def bound_lower_single_link(system: ContractSystem, Q: np.ndarray, Pbar: np.ndarray) -> BoundResult:
     """Lower bound helper under Cbar=I single-link assumptions.
 
@@ -57,7 +57,7 @@ def bound_lower_single_link(system: ContractSystem, Q: np.ndarray, Pbar: np.ndar
         exact_for_static=False,
     )
 
-
+# Gavin Glenn's lower bound
 def bound_lower_full(system: ContractSystem, Pbar: np.ndarray) -> BoundResult:
     """Lower bound helper for full-threat case.
 
