@@ -1,96 +1,83 @@
-# masked-perturbation-model
+# mpmgame: masked-perturbation security games for feedback systems
 
-MATLAB reference implementation for masked perturbation analysis and destabilization cross-testing.
+`mpmgame` is a focused research package that reproduces the masked-perturbation model (MPM) finite-action game formulation at the transfer-function level.
 
-This repository currently contains:
-- A namespaced MATLAB package (`+sgdelta`) with reusable core functions.
-- Example and utility scripts (`scripts/`) for experiments and data export.
-- A lightweight setup helper (`setup.m`) to configure the MATLAB path.
+It models:
+- feedback map `M`
+- attack operator `Δ`
+- binary defense mask `∇`
 
-The project is being prepared for a future Python package extension. This README documents the current MATLAB layout so the codebase remains organized as new language-specific modules are added.
+with core equations:
+
+- `r = M w + d1`
+- `w = (Δ ∘ ∇) r + d2`
+
+A `0` in `∇` blocks a link; a `1` leaves it available to the attacker.
+
+## Scope
+
+This package is for finite-action masked-perturbation games and paper-style worked examples.
+
+It is **not** a full robust-control toolbox and does **not** implement structured singular value (μ) analysis.
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+## Quick start
+
+```python
+import mpmgame as mpm
+
+data = mpm.paper_example_data()
+result = mpm.run_paper_example()
+
+print(result.success_sets.attack_success)
+print(result.reduced.payoff)
+print(result.attacker_mix, result.defender_mix, result.value)
+```
+
+## Core features
+
+- Rank-1 defense masks and defense costs
+- Admissible-defense enumeration under budget
+- Mask algebra (`union`, `intersection`, `complement`, subset relation)
+- Destabilization checks from transfer-function feedback interconnections
+- Success sets and dominated-strategy elimination
+- Zero-sum mixed equilibrium via linear programming (`scipy.optimize.linprog`)
+- Reproduction of the paper’s 2x2 reduced-game equilibrium
+
+
+## Python package module guide
+
+The Python implementation lives under `src/mpmgame/`:
+
+- `core.py`: Main user-facing API for masks, costs, masking operations, stability utilities, success sets, dominance, and payoff construction.
+- `tf_tools.py`: Transfer-function matrix helpers and closed-loop pole/stability checks.
+- `game.py`: Zero-sum finite-game LP solver and expected utility.
+- `examples.py`: Paper-example constructors (`paper_example_data`, `run_paper_example`) and coordinated attack helper.
+- `plotting.py`: Optional plotting helpers (payoff heatmap and success bipartite graph).
+
+For quick interactive use, import directly from the package root (`import mpmgame as mpm`) since these APIs are re-exported in `mpmgame.__init__`.
 
 ## Repository layout
 
 ```text
-masked-perturbation-model/
-├── +sgdelta/                    # Reusable MATLAB package functions
-│   ├── build_M_from_ss.m
-│   ├── construct_delta_allpass.m
-│   ├── mask_M.m
-│   ├── print_info.m
-│   ├── process_masks.m
-│   └── sweep_masks_and_cross_test.m
-├── scripts/                     # Reproducible examples and one-off utilities
-│   ├── ACC_Example.m
-│   ├── four_by_four_ex.m
-│   ├── get_csv.m
-│   └── panic_save.m
-├── setup.m                      # Adds project folders to MATLAB path
-└── README.md
+src/mpmgame/      Python package
+tests/            Pytest suite
+notebooks/        Replication notebook
+matlab/           Preserved MATLAB material
+docs/             Notes
 ```
 
-## MATLAB prerequisites
+## Run tests
 
-- MATLAB R2020b+ recommended.
-- Control System Toolbox required (`tf`, `ss`, `feedback`, `evalfr`, etc.).
-
-## Quick start
-
-1. Open MATLAB at the repository root.
-2. Run setup once per session:
-
-```matlab
-setup
+```bash
+pytest
 ```
 
-3. Call package functions using the `sgdelta` namespace:
+## Notebook
 
-```matlab
-wgrid = logspace(-2, 2, 2001);
-[M_d, Delta, wstar, sigmax, info] = sgdelta.process_masks(M, rmask, wmask, wgrid);
-```
-
-> **Note:** Legacy scripts may call package functions without the namespace. Prefer `sgdelta.<function>` for new work to avoid name collisions as the repository grows.
-
-## Core workflow (MATLAB)
-
-Typical workflow for one plant model:
-
-1. Build or load an LTI model `P` and index partitions with `idx`.
-2. Extract `M = G_rw` using `sgdelta.build_M_from_ss`.
-3. Apply row/column masks with `sgdelta.mask_M` (or directly via `sgdelta.process_masks`).
-4. Construct necessity-side perturbation `Δ(s)` via `sgdelta.construct_delta_allpass`.
-5. Run exhaustive mask/perturbation cross-tests with `sgdelta.sweep_masks_and_cross_test`.
-6. Export CSV summaries for downstream analysis.
-
-## Script usage
-
-See `scripts/README.md` for script-by-script descriptions, expected inputs, and outputs.
-
-## Function reference
-
-See `+sgdelta/README.md` for the package API and function-level guidance.
-
-## Project conventions (for upcoming Python extension)
-
-To keep MATLAB and Python code cleanly separated:
-
-- Keep reusable MATLAB functions in `+sgdelta/`.
-- Keep MATLAB scripts in `scripts/` and treat them as experiment drivers.
-- Avoid adding nontrivial logic directly to top-level scripts; prefer package functions.
-- Use explicit namespaces (`sgdelta.<name>`) in new MATLAB code.
-- Add new Python code under a dedicated Python directory (e.g., `python/` or `src/`) rather than mixing it into MATLAB folders.
-
-## Documentation quality checklist
-
-Before adding new modules:
-
-- [ ] New files include a short header comment describing purpose and inputs/outputs.
-- [ ] Any new script is listed in `scripts/README.md`.
-- [ ] Any new package function is listed in `+sgdelta/README.md`.
-- [ ] Root README layout stays up to date.
-- [ ] Example commands remain runnable from repository root.
-
-## License
-
-No license file is currently included. Add a project license before wider distribution.
+See `notebooks/paper_example.ipynb` for an end-to-end replication of the paper example.
