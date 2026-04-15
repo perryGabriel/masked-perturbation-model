@@ -18,6 +18,8 @@ TF = control.TransferFunction
 def _as_tf(x: object) -> TF:
     if isinstance(x, control.TransferFunction):
         return x
+    if isinstance(x, (int, float, complex, np.number)):
+        return control.tf([x], [1])
     return control.tf(x)
 
 
