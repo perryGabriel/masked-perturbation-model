@@ -5,7 +5,7 @@ opts = struct('min_ones_r', 1, 'max_ones_r', 2, ...
               'stab_eps', -1e-8, 'verbose', true, ...
               'csv_prefix', 'mask_sweep_run1');
 
-out = sweep_masks_and_cross_test(M, idx, wgrid, opts);
+out = sgdelta.sweep_masks_and_cross_test(M, idx, wgrid, opts);
 
 % CSVs:
 %   - 'mask_sweep_run1_masks.csv'   (one row per mask, with rmask/cmask cells)
