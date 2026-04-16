@@ -201,12 +201,12 @@ Important:
 When no single defense `∇` can stabilize against all admissible attacks, can we choose a **small bounded subset** of defenses whose mixed strategy performs nearly as well as the full exponential defense space?
 
 The future-work document even proposes a surrogate objective:
-\[
+$$
 \zeta^* = \arg\max_{\zeta \subseteq \nabla}
 -\alpha_z |\zeta|
 +\sum_{i,j}\alpha_0 |S(\nabla_i)\cup S(\nabla_j)|
 +\alpha_1 |S(\nabla_i)\cap S(\nabla_j)|
-\]
+$$
 subject to `|ζ| ≤ z` and budget feasibility.
 
 ### Why it is strong
