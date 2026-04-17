@@ -201,12 +201,14 @@ Important:
 When no single defense `∇` can stabilize against all admissible attacks, can we choose a **small bounded subset** of defenses whose mixed strategy performs nearly as well as the full exponential defense space?
 
 The future-work document even proposes a surrogate objective:
+
 $$
 \zeta^* = \arg\max_{\zeta \subseteq \nabla}
 -\alpha_z |\zeta|
 +\sum_{i,j}\alpha_0 |S(\nabla_i)\cup S(\nabla_j)|
 +\alpha_1 |S(\nabla_i)\cap S(\nabla_j)|
 $$
+
 subject to `|ζ| ≤ z` and budget feasibility.
 
 ### Why it is strong
@@ -428,9 +430,11 @@ Deliver:
 - Parameterize admissible realizations of a fixed behavioral contract.
 - Define a distribution `π(E)` over exposed read/write sets.
 - Objective:
-  \[
-  \min_{\text{realization}} \mathbb{E}_{E \sim \pi}\left[V(M_E)\right]
-  \]
+
+$$
+\min_{\text{realization}} \mathbb{E}_{E \sim \pi}\left[V(M_E)\right]
+$$
+
   or a risk-sensitive version like CVaR.
 - Study whether separability survives in expectation.
 
@@ -845,9 +849,11 @@ Model:
 
 ### Better formulation than the original sketch
 The key condition should not merely be “the attacker’s `w` ultimate bound lies inside a predeclared box,” but a **self-consistent loop gain condition** such as:
-\[
+
+$$
 \sigma_w \circ \rho_\Delta(s) < s
-\]
+$$
+
 on a relevant domain, where:
 - `σ_w` is the plant-side IOS gain from `w` to `r`
 - `ρ_Δ` is the attacker-side IOS gain from `r` to `w`
