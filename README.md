@@ -1,5 +1,7 @@
 # mpmgame: masked-perturbation security games for feedback systems
 
+A YouTube video of the defense of this Master's Thesis work is available [here](https://youtu.be/jjW-QZsh_lg).
+
 `mpmgame` is a focused research package that reproduces the masked-perturbation model (MPM) finite-action game formulation at the transfer-function level.
 
 It models:
