@@ -98,6 +98,19 @@ __all__ = [
     "plot_projection_convergence",
     "plot_design_comparison",
     "plot_access_model_comparison",
+    "ProblemSpec",
+    "ParameterizationSpec",
+    "EvalResult",
+    "OptimizationResult",
+    "evaluate_theta",
+    "theta_to_q",
+    "q_to_theta",
+    "theta_dim",
+    "optimize_with_algorithm",
+    "REQUIRED_ALGORITHMS",
+    "OPTIONAL_ALGORITHMS",
+    "benchmark_problem_registry",
+    "run_benchmark_suite",
 ]
 
 
@@ -136,3 +149,17 @@ from .plotting_ch2 import (
     plot_design_comparison,
     plot_access_model_comparison,
 )
+
+
+from .objective_engine import (
+    ProblemSpec,
+    ParameterizationSpec,
+    EvalResult,
+    OptimizationResult,
+    evaluate_theta,
+    theta_to_q,
+    q_to_theta,
+    theta_dim,
+)
+from .optimize_nonlinear import optimize_with_algorithm, REQUIRED_ALGORITHMS, OPTIONAL_ALGORITHMS
+from .benchmark_suite import benchmark_problem_registry, run_benchmark_suite
