@@ -1,0 +1,12 @@
+{
+  "algorithms": [
+    "COBYLA",
+    "SLSQP",
+    "L-BFGS-B",
+    "dual_annealing",
+    "shgo"
+  ],
+  "n_restarts": 8,
+  "timeout_per_run_sec": 45,
+  "seed": 202
+}

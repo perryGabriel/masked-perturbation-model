@@ -1,0 +1,13 @@
+{
+  "algorithms": [
+    "Nelder-Mead",
+    "Powell",
+    "SLSQP",
+    "trust-constr",
+    "differential_evolution",
+    "basinhopping"
+  ],
+  "n_restarts": 10,
+  "timeout_per_run_sec": 60,
+  "seed": 101
+}

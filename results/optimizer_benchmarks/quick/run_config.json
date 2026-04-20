@@ -1,0 +1,12 @@
+{
+  "algorithms": [
+    "Nelder-Mead",
+    "Powell",
+    "SLSQP",
+    "L-BFGS-B",
+    "differential_evolution"
+  ],
+  "n_restarts": 5,
+  "timeout_per_run_sec": 45,
+  "seed": 7
+}

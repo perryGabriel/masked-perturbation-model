@@ -1,0 +1,17 @@
+{
+  "algorithms": [
+    "Nelder-Mead",
+    "Powell",
+    "COBYLA",
+    "SLSQP",
+    "L-BFGS-B",
+    "trust-constr",
+    "differential_evolution",
+    "dual_annealing",
+    "basinhopping",
+    "shgo"
+  ],
+  "n_restarts": 4,
+  "timeout_per_run_sec": 5,
+  "seed": 11
+}
