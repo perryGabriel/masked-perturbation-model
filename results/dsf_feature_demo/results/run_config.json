@@ -1,0 +1,8 @@
+{
+  "algorithms": [
+    "Powell"
+  ],
+  "n_restarts": 1,
+  "timeout_per_run_sec": 10,
+  "seed": 13
+}

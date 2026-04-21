@@ -170,15 +170,15 @@
     ]
   ],
   "output_files": {
-    "cross_success_csv": "results/simultaneous_destabilization/cross_success_matrix.csv",
-    "support_overlap_csv": "results/simultaneous_destabilization/support_overlap_matrix.csv",
-    "dominance_json": "results/simultaneous_destabilization/dominance_relations.json",
-    "coverage_json": "results/simultaneous_destabilization/coverage_by_attack.json",
-    "additive_json": "results/simultaneous_destabilization/additive_attacks.json"
+    "cross_success_csv": "results\\simultaneous_destabilization\\cross_success_matrix.csv",
+    "support_overlap_csv": "results\\simultaneous_destabilization\\support_overlap_matrix.csv",
+    "dominance_json": "results\\simultaneous_destabilization\\dominance_relations.json",
+    "coverage_json": "results\\simultaneous_destabilization\\coverage_by_attack.json",
+    "additive_json": "results\\simultaneous_destabilization\\additive_attacks.json"
   },
   "figure_files": [
-    "results/simultaneous_destabilization/cross_success_heatmap.png",
-    "results/simultaneous_destabilization/support_overlap_heatmap.png",
-    "results/simultaneous_destabilization/coverage_frequency.png"
+    "results\\simultaneous_destabilization\\cross_success_heatmap.png",
+    "results\\simultaneous_destabilization\\support_overlap_heatmap.png",
+    "results\\simultaneous_destabilization\\coverage_frequency.png"
   ]
 }
