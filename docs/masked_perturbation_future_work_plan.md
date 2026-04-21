@@ -1,5 +1,27 @@
 # Future-work roadmap for the masked-perturbation program
 
+## Status dashboard
+
+| Item | Priority | Status | Code paths | Docs/Notebook paths | Artifact directories | Last updated date |
+|---|---:|---|---|---|---|---|
+| 2.1 Simultaneous destabilization / dominant attacks | 1 | Completed | `src/mpmgame/simultaneous_attacks.py`; `scripts/simultaneous_destabilization_demo.py`; `tests/test_simultaneous_destabilization.py` | `notebooks/simultaneous_destabilization_demo.ipynb`; `reports/simultaneous_destabilization/report.md` | `results/simultaneous_destabilization/`; `reports/simultaneous_destabilization/` | 2026-04-21 |
+| 2.2 Mixed-defense action-set design | 2 | Completed | `src/mpmgame/mixed_defense.py`; `src/mpmgame/core.py`; `scripts/mixed_defense_benchmark.py`; `tests/test_mixed_defense.py` | `notebooks/mixed_defense_action_set_demo.ipynb`; `reports/mixed_defense/report.md` | `results/mixed_defense/`; `reports/mixed_defense/` | 2026-04-21 |
+| 2.3 Stackelberg / leader-follower masked security game | 3 | Completed | `src/mpmgame/stackelberg.py`; `src/mpmgame/__init__.py`; `scripts/stackelberg_demo.py`; `tests/test_stackelberg.py` | `docs/stackelberg.md`; `notebooks/stackelberg_masked_game_demo.ipynb` | `results/stackelberg/`; `reports/stackelberg/` | 2026-04-21 |
+| 2.4 Signal-importance ranking | 4 | Planned | `src/mpmgame/signal_importance.py` (planned); `scripts/signal_importance_benchmark.py` (planned) | `notebooks/signal_importance_demo.ipynb` (planned); `reports/signal_importance/report.md` (planned) | `results/signal_importance/` (planned); `reports/signal_importance/` (planned) | 2026-04-21 |
+| 2.5 Expected-vulnerability full-FMP reformulation | 5 | Planned | `src/mpmgame/full_fmp_expected_vulnerability.py` (planned); `scripts/full_fmp_expected_vulnerability_demo.py` (planned) | `notebooks/full_fmp_expected_vulnerability_demo.ipynb` (planned); `reports/full_fmp_expected_vulnerability/report.md` (planned) | `results/full_fmp_expected_vulnerability/` (planned); `reports/full_fmp_expected_vulnerability/` (planned) | 2026-04-21 |
+| 2.6 Alternative defense objectives | 6 | Planned | `src/mpmgame/defense_objectives.py` (planned); `scripts/defense_objectives_sweep.py` (planned) | `notebooks/defense_objectives_demo.ipynb` (planned); `reports/defense_objectives/report.md` (planned) | `results/defense_objectives/` (planned); `reports/defense_objectives/` (planned) | 2026-04-21 |
+| 2.7 Budget non-exhaustion conditions | 7 | Planned | `src/mpmgame/budget_spend_analysis.py` (planned); `scripts/budget_spend_counterexamples.py` (planned) | `notebooks/budget_spend_analysis_demo.ipynb` (planned); `reports/budget_spend_analysis/report.md` (planned) | `results/budget_spend_analysis/` (planned); `reports/budget_spend_analysis/` (planned) | 2026-04-21 |
+| 2.8 Forcing attacker mixing | 8 | Planned | `src/mpmgame/attacker_mixing.py` (planned); `scripts/attacker_mixing_scenarios.py` (planned) | `notebooks/attacker_mixing_demo.ipynb` (planned); `reports/attacker_mixing/report.md` (planned) | `results/attacker_mixing/` (planned); `reports/attacker_mixing/` (planned) | 2026-04-21 |
+| 2.9 Sensitivity of optimal defense to attack action | 9 | Planned | `src/mpmgame/defense_sensitivity.py` (planned); `scripts/defense_sensitivity_scan.py` (planned) | `notebooks/defense_sensitivity_demo.ipynb` (planned); `reports/defense_sensitivity/report.md` (planned) | `results/defense_sensitivity/` (planned); `reports/defense_sensitivity/` (planned) | 2026-04-21 |
+| 2.10 Single-defense set-cover approximations | 10 | Planned | `src/mpmgame/single_defense_cover.py` (planned); `scripts/single_defense_cover_benchmark.py` (planned) | `notebooks/single_defense_cover_demo.ipynb` (planned); `reports/single_defense_cover/report.md` (planned) | `results/single_defense_cover/` (planned); `reports/single_defense_cover/` (planned) | 2026-04-21 |
+| 2.11 Simultaneous-attack existence/minimality certificates | 11 | Planned | `src/mpmgame/simultaneous_certificates.py` (planned); `scripts/simultaneous_certificate_examples.py` (planned) | `notebooks/simultaneous_certificate_demo.ipynb` (planned); `reports/simultaneous_certificates/report.md` (planned) | `results/simultaneous_certificates/` (planned); `reports/simultaneous_certificates/` (planned) | 2026-04-21 |
+| 2.12 Partial/probabilistic/delayed masking | 12 | Planned | `src/mpmgame/partial_masking.py` (planned); `scripts/partial_masking_demo.py` (planned) | `notebooks/partial_masking_demo.ipynb` (planned); `reports/partial_masking/report.md` (planned) | `results/partial_masking/` (planned); `reports/partial_masking/` (planned) | 2026-04-21 |
+| 2.13 Time-varying/saturation/drop-channel extensions | 13 | Planned | `src/mpmgame/nonlti_channels.py` (planned); `scripts/nonlti_channel_scenarios.py` (planned) | `notebooks/nonlti_channels_demo.ipynb` (planned); `reports/nonlti_channels/report.md` (planned) | `results/nonlti_channels/` (planned); `reports/nonlti_channels/` (planned) | 2026-04-21 |
+| 2.14 Original hide/rotate full-FMP baseline | 14 | Planned baseline only | `src/mpmgame/full_fmp_hide_rotate_baseline.py` (planned); `scripts/full_fmp_hide_rotate_baseline.py` (planned) | `notebooks/full_fmp_hide_rotate_baseline_demo.ipynb` (planned); `reports/full_fmp_hide_rotate_baseline/report.md` (planned) | `results/full_fmp_hide_rotate_baseline/` (planned); `reports/full_fmp_hide_rotate_baseline/` (planned) | 2026-04-21 |
+| 2.15 Nonlinear ISS / small-gain extension | 15 | Planned | `src/mpmgame/nonlinear_iss.py` (planned); `scripts/nonlinear_iss_examples.py` (planned) | `notebooks/nonlinear_iss_demo.ipynb` (planned); `reports/nonlinear_iss/report.md` (planned) | `results/nonlinear_iss/` (planned); `reports/nonlinear_iss/` (planned) | 2026-04-21 |
+
+**Maintenance note:** Every merged implementation for any item in Section 2 must update (a) this status dashboard row and (b) the section-local **Completion report** block with commands, artifact paths, and limitations in the same pull request.
+
 This document consolidates the open questions from:
 
 - **Chapter 3, Section V** of the main masked-perturbation manuscript
@@ -214,6 +236,14 @@ Produced artifacts under `results/simultaneous_destabilization/`:
 - `support_overlap_heatmap.png`
 - `coverage_frequency.png`
 
+### Completion report
+- **Implementation summary:** Implemented simultaneous-destabilization utilities in `src/mpmgame/simultaneous_attacks.py`, exported them via `src/mpmgame/__init__.py`, and added executable/demo/test/report surfaces in `scripts/simultaneous_destabilization_demo.py`, `notebooks/simultaneous_destabilization_demo.ipynb`, `reports/simultaneous_destabilization/report.md`, and `tests/test_simultaneous_destabilization.py`.
+- **Exact commands used:**
+  - `python scripts/simultaneous_destabilization_demo.py`
+  - `pytest tests/test_simultaneous_destabilization.py`
+- **Generated artifacts and where they live:** `results/simultaneous_destabilization/cross_success_matrix.csv`, `results/simultaneous_destabilization/support_overlap_matrix.csv`, `results/simultaneous_destabilization/dominance_relations.json`, `results/simultaneous_destabilization/coverage_by_attack.json`, `results/simultaneous_destabilization/additive_attacks.json`, `results/simultaneous_destabilization/run_summary.json`, `results/simultaneous_destabilization/cross_success_heatmap.png`, `results/simultaneous_destabilization/support_overlap_heatmap.png`, `results/simultaneous_destabilization/coverage_frequency.png`.
+- **Known limitations:** This is an exploratory finite-search workflow (scalar/diagonal/small examples), not a complete solver for global minimal simultaneous destabilizers under all admissible attack classes.
+
 ---
 
 ## 2.2 Mixed-defense action-set design via success-set geometry
@@ -315,6 +345,14 @@ Important:
 - Added report: `reports/mixed_defense/report.md`.
 - Added tests: `tests/test_mixed_defense.py`.
 
+### Completion report
+- **Implementation summary:** Added mixed-defense set-selection and scoring in `src/mpmgame/mixed_defense.py`, integrated reduced-game helpers in `src/mpmgame/core.py`, exported APIs through `src/mpmgame/__init__.py`, and added benchmark/demo/report/test assets via `scripts/mixed_defense_benchmark.py`, `notebooks/mixed_defense_action_set_demo.ipynb`, `reports/mixed_defense/report.md`, and `tests/test_mixed_defense.py`.
+- **Exact commands used:**
+  - `python scripts/mixed_defense_benchmark.py`
+  - `pytest tests/test_mixed_defense.py`
+- **Generated artifacts and where they live:** benchmark tables/plots and run summaries are written under `results/mixed_defense/`; narrative summary is in `reports/mixed_defense/report.md`.
+- **Known limitations:** Approximation guarantees depend on the specific objective used; when the union/intersection objective is not submodular, reported greedy performance is empirical rather than theorem-backed.
+
 ---
 
 ## 2.3 Stackelberg / leader-follower masked security game
@@ -407,6 +445,14 @@ Reproducibility commands:
 python scripts/stackelberg_demo.py
 pytest tests/test_stackelberg.py
 ```
+
+### Completion report
+- **Implementation summary:** Implemented defender-commitment and attacker best-response utilities in `src/mpmgame/stackelberg.py`, exported APIs in `src/mpmgame/__init__.py`, and added script/notebook/docs/tests in `scripts/stackelberg_demo.py`, `notebooks/stackelberg_masked_game_demo.ipynb`, `docs/stackelberg.md`, and `tests/test_stackelberg.py`.
+- **Exact commands used:**
+  - `python scripts/stackelberg_demo.py`
+  - `pytest tests/test_stackelberg.py`
+- **Generated artifacts and where they live:** `results/stackelberg/mixed_summary.json`, `results/stackelberg/mixed_policy_table.csv`, `results/stackelberg/pure_summary.json`, `results/stackelberg/pure_policy_table.csv`, `results/stackelberg/mixed_expected_attack_utilities.csv`, `results/stackelberg/toy_payoff_matrix.csv`, plus figures in `reports/stackelberg/response_map.png` and `reports/stackelberg/value_comparison.png`.
+- **Known limitations:** Current stackelberg implementation assumes finite sampled attack/defense sets and explicit tie-breaking choices; scalability and continuous-action handling remain future work.
 
 ---
 
