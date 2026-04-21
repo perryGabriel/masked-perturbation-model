@@ -125,6 +125,18 @@ __all__ = [
     "rows_have_same_contracted_subsystem",
     "realization_markdown",
     "write_realization_markdown_from_csv",
+    "MaskDefense",
+    "AttackCandidate",
+    "SimultaneousProblem",
+    "SimultaneousAnalysisResult",
+    "destabilizes",
+    "evaluate_attack_against_masks",
+    "cross_success_matrix",
+    "support_overlap_matrix",
+    "dominance_relations",
+    "additive_combination_search",
+    "analyze_simultaneous_attacks",
+    "write_analysis_outputs",
 ]
 
 
@@ -193,3 +205,19 @@ from .realization_report import (
 DynamicQ_dsf = DynamicQ
 serialize_dynamic_q_for_row_dsf = serialize_dynamic_q_for_row
 deserialize_dynamic_q_from_row_dsf = deserialize_dynamic_q_from_row
+
+
+from .simultaneous_attacks import (
+    MaskDefense,
+    AttackCandidate,
+    SimultaneousProblem,
+    SimultaneousAnalysisResult,
+    destabilizes,
+    evaluate_attack_against_masks,
+    cross_success_matrix,
+    support_overlap_matrix,
+    dominance_relations,
+    additive_combination_search,
+    analyze_simultaneous_attacks,
+    write_analysis_outputs,
+)

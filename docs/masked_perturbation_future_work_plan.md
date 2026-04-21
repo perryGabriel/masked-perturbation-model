@@ -189,6 +189,31 @@ Important:
 - keep the public API small and testable
 ```
 
+### Completion update (implemented)
+- Added module: `src/mpmgame/simultaneous_attacks.py` with data models (`MaskDefense`, `AttackCandidate`, `SimultaneousProblem`), per-mask success evaluation, cross-success and support-overlap matrices, dominance detection, additive-combination search, and output writers.
+- Exposed the simultaneous-destabilization API from `src/mpmgame/__init__.py`.
+- Added runnable demo: `scripts/simultaneous_destabilization_demo.py`.
+- Added notebook: `notebooks/simultaneous_destabilization_demo.ipynb`.
+- Added report: `reports/simultaneous_destabilization/report.md`.
+- Added tests: `tests/test_simultaneous_destabilization.py`.
+
+Implemented command examples:
+```bash
+python scripts/simultaneous_destabilization_demo.py
+pytest tests/test_simultaneous_destabilization.py
+```
+
+Produced artifacts under `results/simultaneous_destabilization/`:
+- `cross_success_matrix.csv`
+- `support_overlap_matrix.csv`
+- `dominance_relations.json`
+- `coverage_by_attack.json`
+- `additive_attacks.json`
+- `run_summary.json`
+- `cross_success_heatmap.png`
+- `support_overlap_heatmap.png`
+- `coverage_frequency.png`
+
 ---
 
 ## 2.2 Mixed-defense action-set design via success-set geometry

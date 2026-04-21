@@ -1,0 +1,166 @@
+[
+  {
+    "dominant": "\u03941",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03941 + \u03942",
+    "dominated": "\u03941"
+  },
+  {
+    "dominant": "\u03941 + \u03942",
+    "dominated": "\u03941 + \u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03942",
+    "dominated": "\u03942"
+  },
+  {
+    "dominant": "\u03941 + \u03942",
+    "dominated": "\u03942 + \u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03942",
+    "dominated": "\u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03942",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03941 + \u03943",
+    "dominated": "\u03941"
+  },
+  {
+    "dominant": "\u03941 + \u03943",
+    "dominated": "\u03942"
+  },
+  {
+    "dominant": "\u03941 + \u03943",
+    "dominated": "\u03942 + \u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03943",
+    "dominated": "\u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03943",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03941"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03941 + \u03942"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03941 + \u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03942"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03942 + \u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03942 + \u03944"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03943"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03943 + \u03944"
+  },
+  {
+    "dominant": "\u03941 + \u03944",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03942",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03942 + \u03943",
+    "dominated": "\u03941"
+  },
+  {
+    "dominant": "\u03942 + \u03943",
+    "dominated": "\u03942"
+  },
+  {
+    "dominant": "\u03942 + \u03943",
+    "dominated": "\u03943"
+  },
+  {
+    "dominant": "\u03942 + \u03943",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03941"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03941 + \u03942"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03941 + \u03943"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03942"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03942 + \u03943"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03943"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03943 + \u03944"
+  },
+  {
+    "dominant": "\u03942 + \u03944",
+    "dominated": "\u03944"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03941"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03941 + \u03942"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03941 + \u03943"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03942"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03942 + \u03943"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03943"
+  },
+  {
+    "dominant": "\u03943 + \u03944",
+    "dominated": "\u03944"
+  }
+]
