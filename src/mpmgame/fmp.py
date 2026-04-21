@@ -50,6 +50,7 @@ class VulnerabilityResult:
     access_model: str
     approximate: bool
     edge_warning: bool
+    diagnostics: dict[str, float] | None = None
 
 
 def build_contract_system(G_blocks: np.ndarray, alpha: np.ndarray, label: str = "system") -> ContractSystem:
@@ -136,6 +137,71 @@ def compute_attack_map(Gamma: np.ndarray, Q: np.ndarray, Pbar: np.ndarray, Cbar:
     return C @ np.asarray(Gamma, dtype=float) @ inv_part @ np.asarray(Pbar, dtype=float)
 
 
+def _default_freq_grid() -> np.ndarray:
+    # Broad default grid for continuous-time responses.
+    return np.logspace(-3, 3, 400)
+
+
+def _eval_tf_matrix_at_omega(M: np.ndarray, omega: float) -> np.ndarray:
+    out = np.zeros(M.shape, dtype=complex)
+    s = 1j * float(omega)
+    for i in range(M.shape[0]):
+        for j in range(M.shape[1]):
+            out[i, j] = complex(control.evalfr(M[i, j], s))
+    return out
+
+
+def compute_attack_map_dynamic(
+    Gamma: np.ndarray,
+    Q_tf: np.ndarray,
+    Pbar_tf: np.ndarray,
+    Cbar: np.ndarray | None = None,
+    freq_grid: np.ndarray | None = None,
+    cond_max: float = 1e10,
+) -> tuple[np.ndarray, dict[str, float]]:
+    """Approximate dynamic attack-map samples on a frequency grid.
+
+    Returns
+    -------
+    M_grid:
+        Complex array with shape ``(n_out, n_in, n_freq)``.
+    diagnostics:
+        Includes grid coverage and worst conditioning of ``I - Q(jω)``.
+    """
+    q_dyn = tf_matrix(Q_tf)
+    p_dyn = tf_matrix(Pbar_tf)
+    if q_dyn.ndim != 2 or q_dyn.shape[0] != q_dyn.shape[1]:
+        raise ValueError(f"Q_tf must be square 2D matrix; got shape {q_dyn.shape}.")
+    if p_dyn.ndim != 2 or p_dyn.shape[0] != q_dyn.shape[0]:
+        raise ValueError(
+            f"Pbar_tf must have compatible shape (n, m) with n={q_dyn.shape[0]}; got {p_dyn.shape}."
+        )
+    omega = _default_freq_grid() if freq_grid is None else np.asarray(freq_grid, dtype=float).reshape(-1)
+    if omega.size == 0:
+        raise ValueError("freq_grid must contain at least one frequency sample.")
+    C = np.eye(q_dyn.shape[0]) if Cbar is None else np.asarray(Cbar, dtype=float)
+    Gm = np.asarray(Gamma, dtype=float)
+    M_grid = np.zeros((C.shape[0], p_dyn.shape[1], omega.size), dtype=complex)
+    cond_vals = np.zeros(omega.size, dtype=float)
+    I = np.eye(q_dyn.shape[0])
+    for k, w in enumerate(omega):
+        q_w = _eval_tf_matrix_at_omega(q_dyn, w)
+        p_w = _eval_tf_matrix_at_omega(p_dyn, w)
+        A = I - q_w
+        c = float(np.linalg.cond(A))
+        cond_vals[k] = c
+        if c > cond_max:
+            raise ValueError(f"Ill-conditioned I - Q(jw) at w={w:.3e} (cond={c:.2e})")
+        M_grid[:, :, k] = C @ Gm @ np.linalg.inv(A) @ p_w
+    diagnostics = {
+        "max_cond_i_minus_q": float(np.max(cond_vals)),
+        "omega_min": float(np.min(omega)),
+        "omega_max": float(np.max(omega)),
+        "num_freq_samples": float(omega.size),
+    }
+    return M_grid, diagnostics
+
+
 def access_matrix(system: ContractSystem, Q: np.ndarray, model: AccessModel) -> np.ndarray:
     """Construct Pbar for access models w0, w1, w2, w3."""
     n = system.n
@@ -167,6 +233,28 @@ def vulnerability_full(system: ContractSystem, Q: np.ndarray, Pbar: np.ndarray, 
     Dynamic systems: would require grid approximation (not used in this static helper).
     """
     Gamma = compute_gamma(system.G, system.alpha)
+    q_is_dyn = _is_dynamic_tf_matrix(Q)
+    p_is_dyn = _is_dynamic_tf_matrix(Pbar)
+    if q_is_dyn and p_is_dyn:
+        M_grid, diagnostics = compute_attack_map_dynamic(Gamma, Q, Pbar, Cbar=Cbar, freq_grid=freq_grid)
+        sigmas = np.array([np.linalg.svd(M_grid[:, :, k], compute_uv=False)[0] for k in range(M_grid.shape[2])], dtype=float)
+        k_peak = int(np.argmax(sigmas))
+        omega = _default_freq_grid() if freq_grid is None else np.asarray(freq_grid, dtype=float).reshape(-1)
+        diagnostics["peak_frequency"] = float(omega[k_peak])
+        diagnostics["grid_coverage_decades"] = float(np.log10(diagnostics["omega_max"] / diagnostics["omega_min"])) if diagnostics["omega_min"] > 0 else float("nan")
+        return VulnerabilityResult(
+            value=float(np.max(sigmas)),
+            threat_model="full",
+            access_model="direct",
+            approximate=True,
+            edge_warning=False,
+            diagnostics=diagnostics,
+        )
+    if q_is_dyn != p_is_dyn:
+        raise TypeError(
+            "Cannot mix static and dynamic operands in vulnerability_full: "
+            f"Q is {'dynamic' if q_is_dyn else 'static'}, Pbar is {'dynamic' if p_is_dyn else 'static'}."
+        )
     M = compute_attack_map(Gamma, Q, Pbar, Cbar=Cbar)
     val = float(np.linalg.svd(M, compute_uv=False)[0])
     return VulnerabilityResult(value=val, threat_model="full", access_model="direct", approximate=False, edge_warning=False)
@@ -178,6 +266,28 @@ def vulnerability_single_link(system: ContractSystem, Q: np.ndarray, Pbar: np.nd
     Static matrices: exact max-entry magnitude.
     """
     Gamma = compute_gamma(system.G, system.alpha)
+    q_is_dyn = _is_dynamic_tf_matrix(Q)
+    p_is_dyn = _is_dynamic_tf_matrix(Pbar)
+    if q_is_dyn and p_is_dyn:
+        M_grid, diagnostics = compute_attack_map_dynamic(Gamma, Q, Pbar, Cbar=Cbar, freq_grid=freq_grid)
+        mags = np.array([np.max(np.abs(M_grid[:, :, k])) for k in range(M_grid.shape[2])], dtype=float)
+        k_peak = int(np.argmax(mags))
+        omega = _default_freq_grid() if freq_grid is None else np.asarray(freq_grid, dtype=float).reshape(-1)
+        diagnostics["peak_frequency"] = float(omega[k_peak])
+        diagnostics["grid_coverage_decades"] = float(np.log10(diagnostics["omega_max"] / diagnostics["omega_min"])) if diagnostics["omega_min"] > 0 else float("nan")
+        return VulnerabilityResult(
+            value=float(np.max(mags)),
+            threat_model="single_link",
+            access_model="direct",
+            approximate=True,
+            edge_warning=False,
+            diagnostics=diagnostics,
+        )
+    if q_is_dyn != p_is_dyn:
+        raise TypeError(
+            "Cannot mix static and dynamic operands in vulnerability_single_link: "
+            f"Q is {'dynamic' if q_is_dyn else 'static'}, Pbar is {'dynamic' if p_is_dyn else 'static'}."
+        )
     M = compute_attack_map(Gamma, Q, Pbar, Cbar=Cbar)
     val = float(np.max(np.abs(M)))
     return VulnerabilityResult(value=val, threat_model="single_link", access_model="direct", approximate=False, edge_warning=False)
