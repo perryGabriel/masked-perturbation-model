@@ -11,6 +11,9 @@ from typing import Callable, Literal
 import warnings
 
 import numpy as np
+import control
+
+from .tf_tools import eye_tf, tf_matmul, tf_matrix
 
 MatrixLike = np.ndarray
 ThreatModel = Literal["full", "single_link"]
@@ -67,6 +70,44 @@ def make_realization(G: np.ndarray, Q: np.ndarray) -> np.ndarray:
     return (I - Qm) @ Gm
 
 
+def _is_dynamic_tf_matrix(x: object) -> bool:
+    if isinstance(x, np.ndarray) and x.dtype == object:
+        return any(isinstance(v, control.TransferFunction) for v in x.flat)
+    return False
+
+
+def make_realization_dynamic(G_tf: np.ndarray, Q_tf: np.ndarray) -> np.ndarray:
+    """Compute ``P = (I - Q)G`` for transfer-matrix operands."""
+    g_dyn = tf_matrix(G_tf)
+    q_dyn = tf_matrix(Q_tf)
+    if g_dyn.ndim != 2 or q_dyn.ndim != 2:
+        raise TypeError("Dynamic realization expects 2D transfer-matrix operands for G_tf and Q_tf.")
+    if g_dyn.shape[0] != g_dyn.shape[1]:
+        raise ValueError(f"G_tf must be square; got shape {g_dyn.shape}.")
+    if q_dyn.shape != g_dyn.shape:
+        raise ValueError(f"Q_tf shape {q_dyn.shape} must match G_tf shape {g_dyn.shape}.")
+    I = eye_tf(g_dyn.shape[0])
+    i_minus_q = I.copy()
+    for i in range(i_minus_q.shape[0]):
+        for j in range(i_minus_q.shape[1]):
+            i_minus_q[i, j] = i_minus_q[i, j] - q_dyn[i, j]
+    return tf_matmul(i_minus_q, g_dyn)
+
+
+def make_realization_checked(G: np.ndarray, Q: np.ndarray) -> np.ndarray:
+    """Dispatch realization to static or dynamic path with explicit type checks."""
+    g_is_dyn = _is_dynamic_tf_matrix(G)
+    q_is_dyn = _is_dynamic_tf_matrix(Q)
+    if g_is_dyn and q_is_dyn:
+        return make_realization_dynamic(np.asarray(G, dtype=object), np.asarray(Q, dtype=object))
+    if g_is_dyn != q_is_dyn:
+        raise TypeError(
+            "Cannot mix static and dynamic realization operands: "
+            f"G is {'dynamic' if g_is_dyn else 'static'}, Q is {'dynamic' if q_is_dyn else 'static'}."
+        )
+    return make_realization(np.asarray(G, dtype=float), np.asarray(Q, dtype=float))
+
+
 def compute_gamma(G: np.ndarray, alpha: np.ndarray, cond_max: float = 1e8) -> np.ndarray:
     """Compute Gamma = (I - G alpha)^(-1) for static matrices."""
     Gm = np.asarray(G, dtype=float)
@@ -101,7 +142,7 @@ def access_matrix(system: ContractSystem, Q: np.ndarray, model: AccessModel) -> 
     if model == "w0":
         return np.zeros((n, n))
     if model == "w1":
-        return make_realization(system.G, Q)
+        return make_realization_checked(system.G, Q)
     if model == "w2":
         return np.eye(n)
     if model == "w3":

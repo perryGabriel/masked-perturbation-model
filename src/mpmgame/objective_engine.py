@@ -6,6 +6,7 @@ from typing import Any, Literal
 import numpy as np
 
 from .fmp import ContractSystem, access_matrix, vulnerability_full, vulnerability_single_link
+from .dsf_param import DynamicQ
 
 ThreatModel = Literal["full", "single_link"]
 ObjectiveType = Literal["true", "frobenius_proxy", "lp_linearized_proxy"]
@@ -255,7 +256,21 @@ def evaluate_theta(theta: np.ndarray, problem: ProblemSpec) -> EvalResult:
     true_obj = np.inf
     surrogate_obj: float | None = None
     try:
-        pbar = access_matrix(problem.system, Q, problem.access_model)
+        q_for_access: np.ndarray = Q
+        if (
+            problem.parameterization.kind == "dsf_poly"
+            and (int(problem.parameterization.q_num_degree) > 0 or int(problem.parameterization.q_den_degree) > 0)
+            and "num_coeffs" in meta
+        ):
+            q_for_access = DynamicQ.from_tensors(
+                num_coeffs=np.asarray(meta["num_coeffs"], dtype=float),
+                den_coeffs=None if meta.get("den_coeffs", None) is None else np.asarray(meta["den_coeffs"], dtype=float),
+                mask=problem.parameterization.mask,
+                zero_diagonal=problem.parameterization.zero_diagonal,
+                metadata={"problem_id": problem.problem_id},
+            ).to_tf_matrix()
+
+        pbar = access_matrix(problem.system, q_for_access, problem.access_model)
         if problem.threat_model == "full":
             true_obj = vulnerability_full(problem.system, Q, pbar, freq_grid=problem.freq_grid).value
         else:
