@@ -20,7 +20,12 @@ from .fmp import build_contract_system
 from .initialization import generate_initializations
 from .objective_engine import OptimizationResult, ParameterizationSpec, ProblemSpec, evaluate_theta, q_to_theta, theta_dim
 from .optimize_nonlinear import OPTIONAL_ALGORITHMS, REQUIRED_ALGORITHMS, available_optional_algorithms, optimize_with_algorithm
-from .reporting_benchmarks import aggregate_results, generate_plots, write_report_markdown
+from .reporting_benchmarks import (
+    aggregate_results,
+    generate_plots,
+    write_incremental_result_markdown,
+    write_report_markdown,
+)
 from .timeouts import run_with_timeout
 
 
@@ -109,6 +114,7 @@ def run_benchmark_suite(
     show_progress: bool = True,
     maxiter: int = 200,
     maxfun: int = 2000,
+    incremental_notes_dir: str | Path | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     algos = algorithms or ["Nelder-Mead", "Powell", "SLSQP", "L-BFGS-B", "differential_evolution"]
     optional_avail = available_optional_algorithms()
@@ -146,6 +152,10 @@ def run_benchmark_suite(
                     if res.feasible:
                         feasible_count += 1
                         current_best = min(current_best, res.true_objective)
+                if incremental_notes_dir is not None:
+                    partial_df = pd.DataFrame([_to_row(r) for r in rows])
+                    note_path = Path(incremental_notes_dir) / prob.problem_id / f"{algo}.md"
+                    write_incremental_result_markdown(note_path, partial_df, prob.problem_id, algo)
                 if hasattr(pbar_restart, "set_postfix"):
                     pbar_restart.set_postfix(best=f"{current_best:.3g}" if np.isfinite(current_best) else "inf", feasible=feasible_count, timeout=timeout_count)
 

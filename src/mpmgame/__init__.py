@@ -111,6 +111,11 @@ __all__ = [
     "OPTIONAL_ALGORITHMS",
     "benchmark_problem_registry",
     "run_benchmark_suite",
+    "load_raw_results",
+    "summarize_row_realization",
+    "rows_have_same_contracted_subsystem",
+    "realization_markdown",
+    "write_realization_markdown_from_csv",
 ]
 
 
@@ -163,3 +168,10 @@ from .objective_engine import (
 )
 from .optimize_nonlinear import optimize_with_algorithm, REQUIRED_ALGORITHMS, OPTIONAL_ALGORITHMS
 from .benchmark_suite import benchmark_problem_registry, run_benchmark_suite
+from .realization_report import (
+    load_raw_results,
+    summarize_row_realization,
+    rows_have_same_contracted_subsystem,
+    realization_markdown,
+    write_realization_markdown_from_csv,
+)

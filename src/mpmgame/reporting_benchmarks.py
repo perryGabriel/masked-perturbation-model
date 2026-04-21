@@ -60,6 +60,63 @@ def write_report_markdown(report_path: Path, raw_df: pd.DataFrame, summary_df: p
     return report_path
 
 
+def _failure_summary(run_df: pd.DataFrame) -> str:
+    failures = run_df[run_df["feasible"] != True]  # noqa: E712
+    if failures.empty:
+        return "No infeasible runs for this algorithm/problem slice."
+    counts = failures["message"].fillna("unknown").value_counts().head(5)
+    return "; ".join([f"{msg}: {int(ct)}" for msg, ct in counts.items()])
+
+
+def write_incremental_result_markdown(
+    report_path: Path,
+    run_df: pd.DataFrame,
+    problem_id: str,
+    algorithm: str,
+) -> Path:
+    """Write per-problem/per-algorithm progress notes.
+
+    This file is intended to be updated after each restart so interpretation can
+    keep pace with data generation.
+    """
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    scope = run_df[(run_df["problem_id"] == problem_id) & (run_df["algorithm"] == algorithm)].copy()
+    lines = [
+        f"# Optimization Notes: {problem_id} / {algorithm}",
+        "",
+        f"- Total runs so far: {len(scope)}",
+    ]
+    feasible = scope[scope["feasible"] == True]  # noqa: E712
+    if feasible.empty:
+        lines.append("- Feasible runs so far: 0")
+        lines.append("- Best feasible objective: n/a")
+    else:
+        best_idx = feasible["true_objective"].idxmin()
+        best = feasible.loc[best_idx]
+        lines.append(f"- Feasible runs so far: {len(feasible)}")
+        lines.append(f"- Best feasible objective: {best['true_objective']:.6g}")
+        lines.append(f"- Best restart id: {int(best['restart_id'])}")
+        lines.append(f"- Best runtime (sec): {float(best['runtime_sec']):.4g}")
+    lines += [
+        "",
+        "## Failure modes observed",
+        "",
+        _failure_summary(scope),
+        "",
+        "## Recent runs",
+        "",
+    ]
+    try:
+        table = scope.sort_values("restart_id").tail(10)[
+            ["restart_id", "seed", "initialization", "success", "feasible", "timeout", "true_objective", "runtime_sec", "message"]
+        ].to_markdown(index=False)
+    except Exception:
+        table = scope.sort_values("restart_id").tail(10).to_string(index=False)
+    lines.append(table)
+    report_path.write_text("\n".join(lines))
+    return report_path
+
+
 def generate_plots(raw_df: pd.DataFrame, summary_df: pd.DataFrame, out_dir: Path) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     paths: list[Path] = []
