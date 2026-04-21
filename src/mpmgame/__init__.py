@@ -109,12 +109,16 @@ __all__ = [
     "q_to_theta",
     "theta_dim",
     "DynamicQ",
+    "DynamicQ_dsf",
     "serialize_dynamic_q_for_row",
+    "serialize_dynamic_q_for_row_dsf",
     "deserialize_dynamic_q_from_row",
+    "deserialize_dynamic_q_from_row_dsf",
     "optimize_with_algorithm",
     "REQUIRED_ALGORITHMS",
     "OPTIONAL_ALGORITHMS",
     "benchmark_problem_registry",
+    "benchmark_problem_registry_dsf",
     "run_benchmark_suite",
     "load_raw_results",
     "summarize_row_realization",
@@ -175,7 +179,7 @@ from .objective_engine import (
 )
 from .dsf_param import DynamicQ, serialize_dynamic_q_for_row, deserialize_dynamic_q_from_row
 from .optimize_nonlinear import optimize_with_algorithm, REQUIRED_ALGORITHMS, OPTIONAL_ALGORITHMS
-from .benchmark_suite import benchmark_problem_registry, run_benchmark_suite
+from .benchmark_suite import benchmark_problem_registry, benchmark_problem_registry_dsf, run_benchmark_suite
 from .realization_report import (
     load_raw_results,
     summarize_row_realization,
@@ -183,3 +187,9 @@ from .realization_report import (
     realization_markdown,
     write_realization_markdown_from_csv,
 )
+
+
+# Explicit DSF aliases for discoverability/migration without changing existing names.
+DynamicQ_dsf = DynamicQ
+serialize_dynamic_q_for_row_dsf = serialize_dynamic_q_for_row
+deserialize_dynamic_q_from_row_dsf = deserialize_dynamic_q_from_row

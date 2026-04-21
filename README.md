@@ -64,6 +64,17 @@ The Python implementation lives under `src/mpmgame/`:
 
 For quick interactive use, import directly from the package root (`import mpmgame as mpm`) since these APIs are re-exported in `mpmgame.__init__`.
 
+### DSF naming and migration note
+
+- DSF-specific exports are now available under explicit names:
+  - `DynamicQ_dsf`
+  - `serialize_dynamic_q_for_row_dsf(...)`
+  - `deserialize_dynamic_q_from_row_dsf(...)`
+  - `benchmark_problem_registry_dsf(...)` (opt-in DSF toy registry)
+- The default `benchmark_problem_registry(...)` remains static (`ParameterizationSpec(kind="static_hollow")`) for reproducibility with existing notebooks/scripts.
+- Internal opt-in constructors now include DSF variants (for example `_toy_problem_dsf(...)`) rather than silently changing static defaults.
+- **Migration note:** “No behavior change unless `ParameterizationSpec.kind='dsf_poly'`”.
+
 ## Repository layout
 
 ```text
