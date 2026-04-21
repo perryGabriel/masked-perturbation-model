@@ -139,3 +139,44 @@ def test_incremental_notes_and_realization_export(tmp_path):
     assert "Contracted subsystem" in md_out.read_text()
 
     assert rows_have_same_contracted_subsystem(row, row)
+
+
+def test_benchmark_flow_mixed_static_and_dsf_specs_serialize(tmp_path):
+    static_problem = benchmark_problem_registry("quick")[0]
+    dsf_problem = ProblemSpec(
+        problem_id="toy2_w1_full_dsf",
+        system=static_problem.system,
+        access_model=static_problem.access_model,
+        threat_model=static_problem.threat_model,
+        parameterization=ParameterizationSpec(
+            kind="dsf_poly",
+            bounds=(-0.25, 0.25),
+            g_hat=0.6,
+            q_num_degree=0,
+            q_den_degree=0,
+            zero_diagonal=True,
+        ),
+    )
+
+    raw, _ = run_benchmark_suite(
+        problem_specs=[static_problem, dsf_problem],
+        algorithms=["Powell"],
+        n_restarts=1,
+        timeout_per_run_sec=3,
+        output_dir=tmp_path / "mix_results",
+        report_dir=tmp_path / "mix_report",
+        show_progress=False,
+        maxiter=10,
+    )
+
+    assert set(raw["problem_id"]) >= {"toy2_w1_full", "toy2_w1_full_dsf"}
+    dsf_rows = raw[raw["problem_id"] == "toy2_w1_full_dsf"]
+    static_rows = raw[raw["problem_id"] == "toy2_w1_full"]
+    assert not dsf_rows.empty
+    assert not static_rows.empty
+    assert (static_rows["param_kind"] == "static_hollow").any()
+    assert (dsf_rows["param_kind"] == "dsf_poly").any()
+    assert dsf_rows["Q_coeffs"].notna().any()
+
+    loaded = load_raw_results(tmp_path / "mix_results" / "benchmark_raw_results.csv")
+    assert set(loaded["problem_id"]) >= {"toy2_w1_full", "toy2_w1_full_dsf"}
