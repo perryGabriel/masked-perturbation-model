@@ -197,11 +197,28 @@ def q_to_theta(Q: np.ndarray, problem: ProblemSpec) -> np.ndarray:
     raise ValueError(f"Unsupported parameterization.kind={spec.kind}")
 
 
-def _check_feasibility(Q: np.ndarray, problem: ProblemSpec) -> tuple[bool, list[str], dict[str, Any]]:
+def _effective_degree(coeffs: np.ndarray, tol: float = 1e-12) -> int:
+    c = np.asarray(coeffs, dtype=float).reshape(-1)
+    nz = np.flatnonzero(np.abs(c) > tol)
+    return int(nz[-1]) if nz.size else 0
+
+
+def _eval_dsf_ratio(num_asc: np.ndarray, den_tail_asc: np.ndarray | None, omega: float) -> complex:
+    z_inv = np.exp(-1j * omega)
+    num = np.sum(np.asarray(num_asc, dtype=float) * (z_inv ** np.arange(len(num_asc))))
+    den = 1.0
+    if den_tail_asc is not None and len(den_tail_asc) > 0:
+        den = den + np.sum(np.asarray(den_tail_asc, dtype=float) * (z_inv ** np.arange(1, len(den_tail_asc) + 1)))
+    return complex(num / den)
+
+
+def _check_feasibility(
+    Q: np.ndarray, problem: ProblemSpec, meta: dict[str, Any] | None = None
+) -> tuple[bool, list[str], dict[str, Any]]:
     reasons: list[str] = []
     n = problem.system.n
-    I = np.eye(n)
     cond_val: float | None = None
+    cond_vals: list[float] = []
 
     if not np.allclose(np.diag(Q), 0.0):
         reasons.append("non_hollow")
@@ -223,21 +240,104 @@ def _check_feasibility(Q: np.ndarray, problem: ProblemSpec) -> tuple[bool, list[
         if np.any(offdiag < lo - 1e-12) or np.any(offdiag > hi + 1e-12):
             reasons.append("box_bound_violation")
 
-    try:
-        A = I - Q
-        cond_val = float(np.linalg.cond(A))
-        if cond_val > problem.cond_max:
-            reasons.append("ill_conditioned")
-        _ = np.linalg.inv(A)
-    except Exception:
-        reasons.append("inversion_failure")
+    if problem.parameterization.kind == "dsf_poly":
+        if meta is None or "num_coeffs" not in meta:
+            reasons.append("missing_dsf_metadata")
+        else:
+            spec = problem.parameterization
+            idx, _, _ = _dsf_poly_layout(problem)
+            num_coeffs = np.asarray(meta["num_coeffs"], dtype=float)
+            den_coeffs = None if meta.get("den_coeffs", None) is None else np.asarray(meta["den_coeffs"], dtype=float)
+            dyn_q = DynamicQ.from_tensors(
+                num_coeffs=num_coeffs,
+                den_coeffs=den_coeffs,
+                mask=spec.mask,
+                zero_diagonal=spec.zero_diagonal,
+                metadata={"problem_id": problem.problem_id},
+                enforce=True,
+            )
+            reasons.extend(dyn_q.verify_constraints())
 
-    return len(reasons) == 0, reasons, {"cond_i_minus_q": cond_val}
+            den_is_optimized = int(spec.q_den_degree) > 0 and spec.stability_parameterization != "fixed_den"
+            if int(spec.q_den_degree) >= 0 and int(spec.q_num_degree) > int(spec.q_den_degree):
+                reasons.append("improper_entry")
+            else:
+                for i, j in idx:
+                    num_deg = _effective_degree(num_coeffs[i, j, :])
+                    if den_coeffs is None:
+                        den_deg = 0
+                    elif den_coeffs.ndim == 1:
+                        den_deg = _effective_degree(np.concatenate([[1.0], den_coeffs]))
+                    else:
+                        den_deg = _effective_degree(np.concatenate([[1.0], den_coeffs[i, j, :]]))
+                    if num_deg > den_deg:
+                        reasons.append("improper_entry")
+                        break
+
+            if den_is_optimized and den_coeffs is not None:
+                if den_coeffs.ndim == 1:
+                    roots = np.roots(np.concatenate([[1.0], den_coeffs]))
+                    if np.any(np.abs(roots) >= 1.0 - 1e-10):
+                        reasons.append("unstable_denominator")
+                else:
+                    unstable = False
+                    for i, j in idx:
+                        roots = np.roots(np.concatenate([[1.0], den_coeffs[i, j, :]]))
+                        if np.any(np.abs(roots) >= 1.0 - 1e-10):
+                            unstable = True
+                            break
+                    if unstable:
+                        reasons.append("unstable_denominator")
+
+            freq_grid = problem.freq_grid
+            if freq_grid is None:
+                freq_grid = problem.parameterization.freq_grid
+
+            if freq_grid is not None and len(freq_grid) > 0:
+                for w in np.asarray(freq_grid, dtype=float).reshape(-1):
+                    try:
+                        Qw = np.zeros((n, n), dtype=complex)
+                        for i, j in idx:
+                            den_tail = None if den_coeffs is None else (den_coeffs if den_coeffs.ndim == 1 else den_coeffs[i, j, :])
+                            Qw[i, j] = _eval_dsf_ratio(num_coeffs[i, j, :], den_tail, float(w))
+                        A = np.eye(n, dtype=complex) - Qw
+                        c = float(np.linalg.cond(A))
+                        cond_vals.append(c)
+                    except Exception:
+                        reasons.append("freq_inversion_failure")
+                        break
+                if cond_vals:
+                    cond_val = float(np.max(cond_vals))
+                    if cond_val > problem.cond_max:
+                        reasons.append("freq_ill_conditioned")
+            else:
+                try:
+                    A = np.eye(n) - Q
+                    cond_val = float(np.linalg.cond(A))
+                    cond_vals.append(cond_val)
+                    if cond_val > problem.cond_max:
+                        reasons.append("ill_conditioned")
+                    _ = np.linalg.inv(A)
+                except Exception:
+                    reasons.append("inversion_failure")
+    else:
+        try:
+            A = np.eye(n) - Q
+            cond_val = float(np.linalg.cond(A))
+            cond_vals.append(cond_val)
+            if cond_val > problem.cond_max:
+                reasons.append("ill_conditioned")
+            _ = np.linalg.inv(A)
+        except Exception:
+            reasons.append("inversion_failure")
+
+    dedup_reasons = list(dict.fromkeys(reasons))
+    return len(dedup_reasons) == 0, dedup_reasons, {"cond_i_minus_q": cond_val, "cond_i_minus_q_grid": cond_vals}
 
 
 def evaluate_theta(theta: np.ndarray, problem: ProblemSpec) -> EvalResult:
     Q, meta = theta_to_q(theta, problem)
-    feasible, reasons, diag = _check_feasibility(Q, problem)
+    feasible, reasons, diag = _check_feasibility(Q, problem, meta=meta)
 
     penalty = 0.0
     if not feasible:
