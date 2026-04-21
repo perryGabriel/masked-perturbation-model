@@ -384,6 +384,30 @@ Requirements:
 Be explicit in docs about tie-breaking assumptions and when the formulation is zero-sum versus general-sum.
 ```
 
+### Completion update (implemented)
+- Added Stackelberg module: `src/mpmgame/stackelberg.py` with defender commitment over budget-feasible masks, attacker best-response utilities for pure/mixed commitments, mixed/pure commitment solvers, and JSON/CSV export helpers.
+- Exported Stackelberg APIs from `src/mpmgame/__init__.py`.
+- Added runnable demo script: `scripts/stackelberg_demo.py`.
+- Added notebook reproduction: `notebooks/stackelberg_masked_game_demo.ipynb`.
+- Added usage guide: `docs/stackelberg.md`.
+- Added consistency tests: `tests/test_stackelberg.py`.
+
+Produced artifacts:
+- `results/stackelberg/mixed_summary.json`
+- `results/stackelberg/mixed_policy_table.csv`
+- `results/stackelberg/pure_summary.json`
+- `results/stackelberg/pure_policy_table.csv`
+- `results/stackelberg/mixed_expected_attack_utilities.csv`
+- `results/stackelberg/toy_payoff_matrix.csv`
+- `reports/stackelberg/response_map.png`
+- `reports/stackelberg/value_comparison.png`
+
+Reproducibility commands:
+```bash
+python scripts/stackelberg_demo.py
+pytest tests/test_stackelberg.py
+```
+
 ---
 
 ## 2.4 Signal-importance ranking and approximation algorithms for defense construction
