@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import ast
+import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from .benchmark_suite import benchmark_problem_registry
-from .fmp import access_matrix, make_realization
+from .dsf_param import deserialize_dynamic_q_from_row
+from .fmp import access_matrix, make_realization_checked
 
 
 def _parse_matrix_cell(cell: object) -> np.ndarray:
@@ -36,8 +38,13 @@ def _problem_by_id(problem_id: str):
 def summarize_row_realization(row: pd.Series) -> dict[str, object]:
     problem = _problem_by_id(str(row["problem_id"]))
     Q = np.asarray(row["Q"], dtype=float)
-    P = make_realization(problem.system.G, Q)
-    pbar = access_matrix(problem.system, Q, problem.access_model)
+    q_for_realization: np.ndarray = Q
+    payload_col = row.get("dynamic_q_payload", None)
+    if payload_col is not None and str(payload_col).strip() not in {"", "nan", "None"}:
+        payload = payload_col if isinstance(payload_col, dict) else json.loads(str(payload_col))
+        q_for_realization = deserialize_dynamic_q_from_row(payload).to_tf_matrix()
+    P = make_realization_checked(problem.system.G, q_for_realization)
+    pbar = access_matrix(problem.system, q_for_realization, problem.access_model)
     return {
         "problem_id": problem.problem_id,
         "algorithm": str(row["algorithm"]),
