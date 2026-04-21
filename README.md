@@ -125,6 +125,16 @@ Added modules:
 
 - `docs/chapter2.md` describes assumptions and interpretation.
 
+### DSF feature demo script
+
+Run an end-to-end script that demonstrates: (i) legacy static compatibility, (ii) dynamic `Q(z)`/`P=(I-Q)G` construction, and (iii) mixed static+DSF benchmark serialization:
+
+```bash
+python scripts/dsf_feature_demo.py --outdir results/dsf_feature_demo
+```
+
+Use `--skip-benchmark` for a faster API-only demonstration.
+
 ### Nonlinear optimizer reporting workflow
 
 To keep per-result interpretation notes while runs are still in progress, pass `incremental_notes_dir` to `run_benchmark_suite(...)`. This creates one markdown file per `(problem_id, algorithm)` and updates it after each restart.
