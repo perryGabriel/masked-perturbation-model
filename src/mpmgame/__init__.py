@@ -106,6 +106,9 @@ __all__ = [
     "theta_to_q",
     "q_to_theta",
     "theta_dim",
+    "DynamicQ",
+    "serialize_dynamic_q_for_row",
+    "deserialize_dynamic_q_from_row",
     "optimize_with_algorithm",
     "REQUIRED_ALGORITHMS",
     "OPTIONAL_ALGORITHMS",
@@ -166,6 +169,7 @@ from .objective_engine import (
     q_to_theta,
     theta_dim,
 )
+from .dsf_param import DynamicQ, serialize_dynamic_q_for_row, deserialize_dynamic_q_from_row
 from .optimize_nonlinear import optimize_with_algorithm, REQUIRED_ALGORITHMS, OPTIONAL_ALGORITHMS
 from .benchmark_suite import benchmark_problem_registry, run_benchmark_suite
 from .realization_report import (
