@@ -40,3 +40,9 @@ Both methods report true measured vulnerability after design and should be inter
 - Notebook bounds demo: `notebooks/chapter2_bounds_demo.ipynb`
 - Notebook design demo: `notebooks/chapter2_design_demo.ipynb`
 - Tests: `pytest`
+
+## DSF migration note
+
+- DSF usage is opt-in via explicit names and constructors (for example `benchmark_problem_registry_dsf(...)` / `_toy_problem_dsf(...)`).
+- The default benchmark registry continues to use static hollow parameterization for backward-compatible reproductions.
+- “No behavior change unless `ParameterizationSpec.kind='dsf_poly'`”.

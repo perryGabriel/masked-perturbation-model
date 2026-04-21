@@ -40,6 +40,35 @@ def _toy_problem(problem_id: str, n: int, access_model: str, threat_model: str) 
     return ProblemSpec(problem_id=problem_id, system=system, access_model=access_model, threat_model=threat_model, parameterization=param)
 
 
+def _toy_problem_dsf(
+    problem_id: str,
+    n: int,
+    access_model: str,
+    threat_model: str,
+    *,
+    q_num_degree: int = 1,
+    q_den_degree: int = 1,
+    shared_denominator: bool = True,
+    stability_parameterization: str = "schur_reflect",
+) -> ProblemSpec:
+    G = np.diag(np.linspace(0.4, 0.7, n))
+    alpha = np.zeros((n, n))
+    for i in range(n - 1):
+        alpha[i, i + 1] = 0.1
+        alpha[i + 1, i] = 0.05
+    system = build_contract_system(G, alpha, label=problem_id)
+    param = ParameterizationSpec(
+        kind="dsf_poly",
+        bounds=(-0.25, 0.25),
+        g_hat=0.6,
+        q_num_degree=q_num_degree,
+        q_den_degree=q_den_degree,
+        shared_denominator=shared_denominator,
+        stability_parameterization=stability_parameterization,
+    )
+    return ProblemSpec(problem_id=problem_id, system=system, access_model=access_model, threat_model=threat_model, parameterization=param)
+
+
 def benchmark_problem_registry(preset: str = "quick") -> list[ProblemSpec]:
     quick = [
         _toy_problem("toy2_w1_full", 2, "w1", "full"),
@@ -51,6 +80,20 @@ def benchmark_problem_registry(preset: str = "quick") -> list[ProblemSpec]:
     return quick + [
         _toy_problem("toy2_w2_single", 2, "w2", "single_link"),
         _toy_problem("toy3_w1_full", 3, "w1", "full"),
+    ]
+
+
+def benchmark_problem_registry_dsf(preset: str = "quick") -> list[ProblemSpec]:
+    quick = [
+        _toy_problem_dsf("toy2_w1_full_dsf", 2, "w1", "full"),
+        _toy_problem_dsf("toy3_w2_single_dsf", 3, "w2", "single_link"),
+        _toy_problem_dsf("toy3_w3_full_dsf", 3, "w3", "full"),
+    ]
+    if preset == "quick":
+        return quick
+    return quick + [
+        _toy_problem_dsf("toy2_w2_single_dsf", 2, "w2", "single_link"),
+        _toy_problem_dsf("toy3_w1_full_dsf", 3, "w1", "full"),
     ]
 
 
