@@ -19,6 +19,13 @@ class ParameterizationSpec:
     mask: np.ndarray | None = None
     bounds: tuple[float, float] | None = None
     g_hat: float | None = None
+    q_num_degree: int = 0
+    q_den_degree: int = 0
+    shared_denominator: bool = True
+    stability_parameterization: str = "fixed_den"
+    zero_diagonal: bool = True
+    freq_grid: np.ndarray | None = None
+    freq_weighting: np.ndarray | None = None
 
 
 @dataclass
@@ -84,25 +91,109 @@ def free_entries(n: int, mask: np.ndarray | None = None) -> list[tuple[int, int]
 
 
 def theta_dim(problem: ProblemSpec) -> int:
-    return len(free_entries(problem.system.n, problem.parameterization.mask))
+    spec = problem.parameterization
+    n_free = len(free_entries(problem.system.n, spec.mask))
+    if spec.kind == "static_hollow":
+        return n_free
+    if spec.kind == "dsf_poly":
+        num_params = n_free * (int(spec.q_num_degree) + 1)
+        den_degree = int(spec.q_den_degree)
+        if den_degree > 0 and spec.stability_parameterization != "fixed_den":
+            if spec.shared_denominator:
+                den_params = den_degree
+            else:
+                den_params = n_free * den_degree
+        else:
+            den_params = 0
+        return int(num_params + den_params)
+    raise ValueError(f"Unsupported parameterization.kind={spec.kind}")
+
+
+def _dsf_poly_layout(problem: ProblemSpec) -> tuple[list[tuple[int, int]], int, int]:
+    spec = problem.parameterization
+    idx = free_entries(problem.system.n, spec.mask)
+    return idx, int(spec.q_num_degree) + 1, int(spec.q_den_degree)
 
 
 def theta_to_q(theta: np.ndarray, problem: ProblemSpec) -> tuple[np.ndarray, dict[str, Any]]:
     n = problem.system.n
-    idx = free_entries(n, problem.parameterization.mask)
+    spec = problem.parameterization
+    idx = free_entries(n, spec.mask)
     t = np.asarray(theta, dtype=float).reshape(-1)
-    if len(t) != len(idx):
-        raise ValueError(f"theta length {len(t)} != required {len(idx)}")
-    Q = np.zeros((n, n), dtype=float)
-    for k, (i, j) in enumerate(idx):
-        Q[i, j] = t[k]
-    return Q, {"n_free": len(idx), "indices": idx}
+    if spec.kind == "static_hollow":
+        if len(t) != len(idx):
+            raise ValueError(f"theta length {len(t)} != required {len(idx)}")
+        Q = np.zeros((n, n), dtype=float)
+        for k, (i, j) in enumerate(idx):
+            Q[i, j] = t[k]
+        return Q, {"n_free": len(idx), "indices": idx}
+
+    if spec.kind == "dsf_poly":
+        idx, num_terms, den_degree = _dsf_poly_layout(problem)
+        n_free = len(idx)
+        num_count = n_free * num_terms
+        den_count = 0
+        if den_degree > 0 and spec.stability_parameterization != "fixed_den":
+            den_count = den_degree if spec.shared_denominator else n_free * den_degree
+        required = num_count + den_count
+        if len(t) != required:
+            raise ValueError(f"theta length {len(t)} != required {required}")
+
+        Q = np.zeros((n, n), dtype=float)
+        num_coeffs = np.zeros((n, n, num_terms), dtype=float)
+        cursor = 0
+        for i, j in idx:
+            coeffs = t[cursor : cursor + num_terms]
+            num_coeffs[i, j, :] = coeffs
+            Q[i, j] = coeffs[0]
+            cursor += num_terms
+
+        den_coeffs = None
+        if den_count > 0:
+            if spec.shared_denominator:
+                den_coeffs = t[cursor : cursor + den_degree].copy()
+            else:
+                den_coeffs = np.zeros((n, n, den_degree), dtype=float)
+                for i, j in idx:
+                    den_coeffs[i, j, :] = t[cursor : cursor + den_degree]
+                    cursor += den_degree
+
+        if spec.zero_diagonal:
+            np.fill_diagonal(Q, 0.0)
+            for d in range(num_terms):
+                np.fill_diagonal(num_coeffs[:, :, d], 0.0)
+
+        return Q, {
+            "n_free": n_free,
+            "indices": idx,
+            "kind": "dsf_poly",
+            "q_num_degree": spec.q_num_degree,
+            "q_den_degree": spec.q_den_degree,
+            "num_coeffs": num_coeffs,
+            "den_coeffs": den_coeffs,
+        }
+
+    raise ValueError(f"Unsupported parameterization.kind={spec.kind}")
 
 
 def q_to_theta(Q: np.ndarray, problem: ProblemSpec) -> np.ndarray:
     q = np.asarray(Q, dtype=float)
-    idx = free_entries(problem.system.n, problem.parameterization.mask)
-    return np.array([q[i, j] for i, j in idx], dtype=float)
+    spec = problem.parameterization
+    idx = free_entries(problem.system.n, spec.mask)
+    if spec.kind == "static_hollow":
+        return np.array([q[i, j] for i, j in idx], dtype=float)
+    if spec.kind == "dsf_poly":
+        _, num_terms, den_degree = _dsf_poly_layout(problem)
+        vals: list[float] = []
+        for i, j in idx:
+            vals.append(float(q[i, j]))
+            if num_terms > 1:
+                vals.extend([0.0] * (num_terms - 1))
+        if den_degree > 0 and spec.stability_parameterization != "fixed_den":
+            den_count = den_degree if spec.shared_denominator else len(idx) * den_degree
+            vals.extend([0.0] * den_count)
+        return np.array(vals, dtype=float)
+    raise ValueError(f"Unsupported parameterization.kind={spec.kind}")
 
 
 def _check_feasibility(Q: np.ndarray, problem: ProblemSpec) -> tuple[bool, list[str], dict[str, Any]]:
