@@ -11,3 +11,19 @@
 
 Numerical caveat:
 - Near-marginal poles trigger warnings for reproducibility and debugging.
+
+## v1 assumptions for `Q`/`P` parameterization
+
+For the current implementation generation (v1), we use a constrained `Q` parameterization:
+
+- For `i != j`, each `Q_{ij}(z)` is modeled as a discrete-time proper rational transfer function.
+- Diagonal entries are fixed to zero exactly: `Q_{ii}(z) = 0`.
+- A shared denominator order `d_Q` is used across all nonzero off-diagonal entries (recommended v1 default).
+- v1 chooses **strictly proper** off-diagonal entries:
+  - `deg(num(Q_{ij})) <= d_Q - 1` for all modeled links.
+- `P` is never parameterized independently; it is always derived/computed from `Q` and `G`.
+
+Tradeoff (why shared denominator in v1):
+- reduces the decision-variable count;
+- improves practical identifiability by limiting equivalent parameterizations;
+- tends to improve conditioning in numerical optimization and estimation routines.
