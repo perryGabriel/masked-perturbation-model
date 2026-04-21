@@ -97,6 +97,7 @@ Added modules:
 - `mpmgame.design_projection`: projection-inspired finite-dimensional surrogate iterations.
 - `mpmgame.design_lp`: LP-inspired finite-dimensional relaxation via `scipy.optimize.linprog`.
 - `mpmgame.plotting_ch2`: plotting helpers for vulnerability-vs-parameter and design diagnostics.
+- `mpmgame.realization_report`: helpers to turn optimizer CSV outputs into per-result markdown notes and inspect the recovered realization (`Q`, `P=(I-Q)G`) in numeric/SymPy-friendly form.
 
 ### Exact vs approximate
 
@@ -113,3 +114,18 @@ Added modules:
 
 - `docs/chapter2.md` describes assumptions and interpretation.
 
+### Nonlinear optimizer reporting workflow
+
+To keep per-result interpretation notes while runs are still in progress, pass `incremental_notes_dir` to `run_benchmark_suite(...)`. This creates one markdown file per `(problem_id, algorithm)` and updates it after each restart.
+
+After a run, you can emit a realization-inspection markdown document from the raw CSV:
+
+```python
+from mpmgame.realization_report import write_realization_markdown_from_csv
+
+write_realization_markdown_from_csv(
+    "results/optimizer_benchmarks/full/benchmark_raw_results.csv",
+    "reports/optimizer_benchmarks/full/realizations/toy3_w3_full_best.md",
+    problem_id="toy3_w3_full",
+)
+```

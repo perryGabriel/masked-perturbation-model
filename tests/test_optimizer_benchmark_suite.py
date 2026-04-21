@@ -4,6 +4,12 @@ import numpy as np
 
 from mpmgame.benchmark_suite import benchmark_problem_registry, run_benchmark_suite
 from mpmgame.objective_engine import ParameterizationSpec, ProblemSpec, evaluate_theta, q_to_theta, theta_dim, theta_to_q
+from mpmgame.realization_report import (
+    load_raw_results,
+    rows_have_same_contracted_subsystem,
+    summarize_row_realization,
+    write_realization_markdown_from_csv,
+)
 from mpmgame.timeouts import run_with_timeout
 
 
@@ -96,3 +102,40 @@ def test_tqdm_non_interactive(tmp_path):
         maxiter=10,
     )
     assert not raw.empty
+
+
+def test_incremental_notes_and_realization_export(tmp_path):
+    out_dir = tmp_path / "r"
+    rep_dir = tmp_path / "p"
+    notes_dir = tmp_path / "notes"
+    raw, _ = run_benchmark_suite(
+        problem_specs=benchmark_problem_registry("quick")[:1],
+        algorithms=["Powell"],
+        n_restarts=2,
+        timeout_per_run_sec=3,
+        output_dir=out_dir,
+        report_dir=rep_dir,
+        incremental_notes_dir=notes_dir,
+        show_progress=False,
+        maxiter=10,
+    )
+    assert not raw.empty
+    note_files = list(notes_dir.rglob("*.md"))
+    assert note_files
+    text = note_files[0].read_text()
+    assert "Failure modes observed" in text
+
+    csv_path = out_dir / "benchmark_raw_results.csv"
+    loaded = load_raw_results(csv_path)
+    feasible = loaded[(loaded["problem_id"] == "toy2_w1_full") & (loaded["feasible"] == True)]  # noqa: E712
+    assert not feasible.empty
+    row = feasible.iloc[0]
+    summary = summarize_row_realization(row)
+    assert summary["Q"].shape == (2, 2)
+
+    md_out = tmp_path / "realization.md"
+    write_realization_markdown_from_csv(csv_path, md_out, problem_id="toy2_w1_full")
+    assert md_out.exists()
+    assert "Contracted subsystem" in md_out.read_text()
+
+    assert rows_have_same_contracted_subsystem(row, row)
