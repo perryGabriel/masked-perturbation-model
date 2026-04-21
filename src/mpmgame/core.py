@@ -306,6 +306,30 @@ def eliminate_dominated_strategies(M: np.ndarray, attacks: Sequence[AttackAction
     return ReducedGame(payoff=reduced_payoff, attacks=cur_att, defenses=cur_def)
 
 
+
+
+def select_defense_actions(defenses: Sequence[DefenseAction], labels: Sequence[str]) -> list[DefenseAction]:
+    label_set = set(labels)
+    selected = [d for d in defenses if d.label in label_set]
+    if not selected:
+        raise ValueError("no defenses selected")
+    return selected
+
+
+def evaluate_reduced_defense_game(
+    M: np.ndarray,
+    attacks: Sequence[np.ndarray] | Sequence[AttackAction],
+    defenses: Sequence[np.ndarray] | Sequence[DefenseAction],
+    ua: float = 1.0,
+    ud: float = 0.0,
+    ua_fn: UtilityFn | None = None,
+    ud_fn: UtilityFn | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+    reduced_payoff = payoff_matrix(M, attacks, defenses, ua=ua, ud=ud, ua_fn=ua_fn, ud_fn=ud_fn)
+    attacker_mix, defender_mix, value = solve_zero_sum_game(reduced_payoff)
+    return reduced_payoff, attacker_mix, defender_mix, value
+
+
 def solve_zero_sum_game(payoff: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
     return _solve_zero_sum_game(payoff)
 
