@@ -307,6 +307,14 @@ Important:
 - keep code modular so alternative objectives can be swapped in
 ```
 
+### Completed implementation note
+- Added mixed-defense module: `src/mpmgame/mixed_defense.py` (success-set extraction, capped subset selection with greedy/random baselines, and union/intersection/cardinality objective components).
+- Added reduced-game subset evaluation helpers in `src/mpmgame/core.py` and exported the APIs in `src/mpmgame/__init__.py`.
+- Added benchmark sweep runner: `scripts/mixed_defense_benchmark.py` with artifacts saved to `results/mixed_defense/` and `reports/mixed_defense/`.
+- Added notebook: `notebooks/mixed_defense_action_set_demo.ipynb`.
+- Added report: `reports/mixed_defense/report.md`.
+- Added tests: `tests/test_mixed_defense.py`.
+
 ---
 
 ## 2.3 Stackelberg / leader-follower masked security game

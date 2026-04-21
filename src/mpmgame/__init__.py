@@ -26,7 +26,9 @@ from .core import (
     dominated_attacks,
     dominated_defenses,
     eliminate_dominated_strategies,
+    select_defense_actions,
     payoff_matrix,
+    evaluate_reduced_defense_game,
     expected_utility,
     solve_zero_sum_game,
 )
@@ -59,7 +61,9 @@ __all__ = [
     "dominated_attacks",
     "dominated_defenses",
     "eliminate_dominated_strategies",
+    "select_defense_actions",
     "payoff_matrix",
+    "evaluate_reduced_defense_game",
     "expected_utility",
     "solve_zero_sum_game",
     "paper_example_data",
@@ -137,6 +141,16 @@ __all__ = [
     "additive_combination_search",
     "analyze_simultaneous_attacks",
     "write_analysis_outputs",
+    "MixedDefenseWeights",
+    "MixedDefenseObjectiveComponents",
+    "MixedDefenseSelection",
+    "MixedDefenseEvaluation",
+    "defense_success_sets",
+    "mixed_defense_objective_components",
+    "mixed_defense_objective",
+    "select_defense_subset_greedy",
+    "select_defense_subset_random",
+    "evaluate_mixed_defense_subset",
 ]
 
 
@@ -220,4 +234,18 @@ from .simultaneous_attacks import (
     additive_combination_search,
     analyze_simultaneous_attacks,
     write_analysis_outputs,
+)
+
+
+from .mixed_defense import (
+    MixedDefenseWeights,
+    MixedDefenseObjectiveComponents,
+    MixedDefenseSelection,
+    MixedDefenseEvaluation,
+    defense_success_sets,
+    mixed_defense_objective_components,
+    mixed_defense_objective,
+    select_defense_subset_greedy,
+    select_defense_subset_random,
+    evaluate_mixed_defense_subset,
 )
