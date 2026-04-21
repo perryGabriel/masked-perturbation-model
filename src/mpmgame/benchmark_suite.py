@@ -56,8 +56,40 @@ def benchmark_problem_registry(preset: str = "quick") -> list[ProblemSpec]:
 
 def _to_row(r: OptimizationResult) -> dict:
     d = dataclasses.asdict(r)
+    diagnostics = dict(r.diagnostics or {})
+    param_kind = str(diagnostics.get("kind", "static_hollow"))
+    if param_kind == "":
+        param_kind = "static_hollow"
     d["theta"] = np.asarray(r.theta).tolist()
     d["Q"] = np.asarray(r.Q).tolist()
+    d["param_kind"] = param_kind
+    d["Q_coeffs"] = None
+    d["Q_meta"] = None
+    d["P_coeffs"] = None
+
+    if param_kind == "dsf_poly":
+        num_coeffs = diagnostics.get("num_coeffs", None)
+        den_coeffs = diagnostics.get("den_coeffs", None)
+        q_payload: dict[str, object] = {"kind": "dsf_poly", "num_coeffs": None, "den_coeffs": None}
+        if num_coeffs is not None:
+            q_payload["num_coeffs"] = np.asarray(num_coeffs, dtype=float).tolist()
+        if den_coeffs is not None:
+            q_payload["den_coeffs"] = np.asarray(den_coeffs, dtype=float).tolist()
+        d["Q_coeffs"] = q_payload
+
+        q_meta = {
+            "q_num_degree": diagnostics.get("q_num_degree"),
+            "q_den_degree": diagnostics.get("q_den_degree"),
+            "n_free": diagnostics.get("n_free"),
+            "indices": diagnostics.get("indices"),
+            "cond_i_minus_q_grid": diagnostics.get("cond_i_minus_q_grid"),
+            "reasons": diagnostics.get("reasons"),
+        }
+        d["Q_meta"] = {k: v for k, v in q_meta.items() if v is not None}
+
+        p_coeffs = diagnostics.get("P_coeffs", None)
+        if p_coeffs is not None:
+            d["P_coeffs"] = p_coeffs
     return d
 
 
