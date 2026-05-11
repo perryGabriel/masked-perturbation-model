@@ -4,7 +4,7 @@
 - Feasible runs so far: 5
 - Best feasible objective: 0.702491
 - Best restart id: 3
-- Best runtime (sec): 0.002445
+- Best runtime (sec): 0.01005
 
 ## Failure modes observed
 
@@ -14,8 +14,8 @@ No infeasible runs for this algorithm/problem slice.
 
 |   restart_id |   seed | initialization   | success   | feasible   | timeout   |   true_objective |   runtime_sec | message                              |
 |-------------:|-------:|:-----------------|:----------|:-----------|:----------|-----------------:|--------------:|:-------------------------------------|
-|            0 |      7 | zero             | True      | True       | False     |         0.702491 |     0.0104081 | Optimization terminated successfully |
-|            1 |     20 | gaussian_0       | True      | True       | False     |         0.702491 |     0.0018198 | Optimization terminated successfully |
-|            2 |     33 | sparse_0         | True      | True       | False     |         0.702491 |     0.0026684 | Optimization terminated successfully |
-|            3 |     46 | gaussian_1       | True      | True       | False     |         0.702491 |     0.0024447 | Optimization terminated successfully |
-|            4 |     59 | sparse_1         | True      | True       | False     |         0.702491 |     0.003355  | Optimization terminated successfully |
+|            0 |      7 | zero             | True      | True       | False     |         0.702491 |     0.0023168 | Optimization terminated successfully |
+|            1 |     20 | gaussian_0       | True      | True       | False     |         0.702491 |     0.0061757 | Optimization terminated successfully |
+|            2 |     33 | sparse_0         | True      | True       | False     |         0.702491 |     0.0069057 | Optimization terminated successfully |
+|            3 |     46 | gaussian_1       | True      | True       | False     |         0.702491 |     0.0100471 | Optimization terminated successfully |
+|            4 |     59 | sparse_1         | True      | True       | False     |         0.702491 |     0.004959  | Optimization terminated successfully |

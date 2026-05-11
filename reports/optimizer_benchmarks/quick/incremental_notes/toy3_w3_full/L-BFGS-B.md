@@ -4,7 +4,7 @@
 - Feasible runs so far: 5
 - Best feasible objective: 0
 - Best restart id: 0
-- Best runtime (sec): 0.05064
+- Best runtime (sec): 0.04427
 
 ## Failure modes observed
 
@@ -14,8 +14,8 @@ No infeasible runs for this algorithm/problem slice.
 
 |   restart_id |   seed | initialization   | success   | feasible   | timeout   |   true_objective |   runtime_sec | message                                              |
 |-------------:|-------:|:-----------------|:----------|:-----------|:----------|-----------------:|--------------:|:-----------------------------------------------------|
-|            0 |      7 | zero             | False     | True       | False     |      0           |     0.0506386 | ABNORMAL:                                            |
-|            1 |     20 | gaussian_0       | True      | True       | False     |      2.32783e-08 |     0.207184  | CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH |
-|            2 |     33 | sparse_0         | False     | True       | False     |      6.47545e-09 |     0.250659  | ABNORMAL:                                            |
-|            3 |     46 | gaussian_1       | True      | True       | False     |      1.12538e-08 |     0.208516  | CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH |
-|            4 |     59 | sparse_1         | True      | True       | False     |      8.20817e-09 |     0.18663   | CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH |
+|            0 |      7 | zero             | False     | True       | False     |      0           |     0.0442682 | ABNORMAL:                                            |
+|            1 |     20 | gaussian_0       | True      | True       | False     |      2.32783e-08 |     0.172398  | CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH |
+|            2 |     33 | sparse_0         | False     | True       | False     |      6.47545e-09 |     0.264614  | ABNORMAL:                                            |
+|            3 |     46 | gaussian_1       | True      | True       | False     |      1.12538e-08 |     0.174123  | CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH |
+|            4 |     59 | sparse_1         | True      | True       | False     |      8.20817e-09 |     0.175546  | CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH |

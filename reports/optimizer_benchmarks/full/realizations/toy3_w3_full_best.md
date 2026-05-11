@@ -1,5 +1,6 @@
 # Realization inspection: toy3_w3_full / baseline_zero / restart 0
 
+- Parameterization: `static_hollow`
 - Feasible: `True`
 - Objective: `0`
 

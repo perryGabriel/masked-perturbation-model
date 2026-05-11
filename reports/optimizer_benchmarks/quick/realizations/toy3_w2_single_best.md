@@ -1,5 +1,6 @@
 # Realization inspection: toy3_w2_single / L-BFGS-B / restart 4
 
+- Parameterization: `static_hollow`
 - Feasible: `True`
 - Objective: `0.897716`
 

@@ -1,5 +1,6 @@
 # Realization inspection: toy3_w1_full / Nelder-Mead / restart 7
 
+- Parameterization: `static_hollow`
 - Feasible: `True`
 - Objective: `0.706888`
 

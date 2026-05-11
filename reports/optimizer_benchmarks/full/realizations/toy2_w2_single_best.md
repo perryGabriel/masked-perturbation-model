@@ -1,5 +1,6 @@
 # Realization inspection: toy2_w2_single / baseline_zero / restart 0
 
+- Parameterization: `static_hollow`
 - Feasible: `True`
 - Objective: `1.0014`
 
