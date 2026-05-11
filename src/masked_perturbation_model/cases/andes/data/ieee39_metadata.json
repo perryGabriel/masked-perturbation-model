@@ -1,0 +1,13 @@
+{
+  "name": "ieee39",
+  "description": "IEEE 39-bus (New England) dynamic example loaded through ANDES.",
+  "raw_case": "ieee39/ieee39.raw",
+  "dyr_case": "ieee39/ieee39.dyr",
+  "expected_buses": 39,
+  "expected_generators": 10,
+  "source": "ANDES built-in case library",
+  "notes": [
+    "The static package asset stores loader metadata; the RAW/DYR files are resolved from the installed ANDES package.",
+    "This example exposes loading and linearized representation utilities only; it does not implement simultaneous destabilization."
+  ]
+}

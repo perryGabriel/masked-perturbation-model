@@ -150,3 +150,52 @@ write_realization_markdown_from_csv(
     problem_id="toy3_w3_full",
 )
 ```
+
+## ANDES IEEE 39-bus example system
+
+This repository also exposes larger ANDES-backed example systems through an
+installable package API.  The GitHub/distribution name uses hyphens in some
+contexts, but Python imports must use valid identifiers.  Use the underscore
+package path for the new examples:
+
+```python
+from masked_perturbation_model.cases import ieee39
+from masked_perturbation_model.cases import load_ieee39_case
+from masked_perturbation_model.cases.ieee39 import IEEE39Model, build_ieee39_lft
+```
+
+The existing `mpmgame` package remains supported; compatibility imports are also
+available from `mpmgame.cases`.
+
+ANDES is optional so the base package can still be imported in lightweight
+environments.  Install the ANDES extra before building the live ANDES system:
+
+```bash
+pip install -e ".[andes]"
+# or, from a wheel/sdist:
+pip install "mpmgame[andes]"
+```
+
+Minimal usage:
+
+```python
+from masked_perturbation_model.cases import load_ieee39_case
+
+case = load_ieee39_case()
+print(case.summary())          # metadata works without importing ANDES
+
+system = case.build_system()   # requires ANDES; loads and linearizes IEEE39
+lft = case.build_lft(system_model=system)
+
+print(system.summary())
+print(lft.nstates, lft.ninputs, lft.noutputs)
+```
+
+The IEEE39 API is intentionally limited to loading the ANDES case, extracting a
+small-signal state matrix through ANDES, and exposing a deterministic
+state-space/LFT-style container for examples and tests.  It does **not** add
+simultaneous destabilization support or new simultaneous Delta-construction
+algorithms.
+
+A script demo is available at `examples/andes_ieee39_demo.py`, and a thin
+notebook demo is available at `notebooks/andes_ieee39_demo.ipynb`.
