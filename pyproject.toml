@@ -21,6 +21,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+andes = [
+  "andes>=1.9",
+]
+demos = [
+  "jupyter>=1.0",
+  "notebook>=7.0",
+  "matplotlib>=3.7",
+]
 dev = [
   "pytest>=7.0",
   "jupyter>=1.0",
@@ -29,6 +37,11 @@ dev = [
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.package-data]
+"masked_perturbation_model.cases.andes.data" = ["*.json"]
+"mpmgame.cases.andes.data" = ["*.json"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
