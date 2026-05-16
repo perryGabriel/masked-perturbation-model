@@ -79,8 +79,10 @@ For quick interactive use, import directly from the package root (`import mpmgam
 
 ```text
 src/mpmgame/      Python package
+src/mpm_grid_demo/ ANDES verification helpers
+
 tests/            Pytest suite
-notebooks/        Replication notebook
+notebooks/        Replication and demo notebooks
 matlab/           Preserved MATLAB material
 docs/             Notes
 ```
@@ -91,9 +93,10 @@ docs/             Notes
 pytest
 ```
 
-## Notebook
+## Notebooks
 
-See `notebooks/paper_example.ipynb` for an end-to-end replication of the paper example.
+- `notebooks/paper_example.ipynb`: end-to-end replication of the paper example.
+- `notebooks/andes_grid_demo.ipynb`: ANDES-backed verification workflow with synthetic fallback when case extraction is unavailable.
 
 
 ## Chapter-2 FMP extension (numerical demos)
@@ -199,3 +202,17 @@ algorithms.
 
 A script demo is available at `examples/andes_ieee39_demo.py`, and a thin
 notebook demo is available at `notebooks/andes_ieee39_demo.ipynb`.
+
+## ANDES grid verification scaffold
+
+The former standalone `mpm-andes-demo` verification scaffold now lives directly in this repository under `src/mpm_grid_demo/`. It provides:
+
+- case acquisition helpers for public ANDES benchmarks,
+- ANDES loading/setup wrappers,
+- defensive small-signal matrix extraction,
+- a stable synthetic fallback model for smoke testing,
+- read/write channel construction for MPM experiments,
+- a bridge into the core `masked_perturbation_model.lft.build_model_map` API,
+- a lightweight verification notebook in `notebooks/andes_grid_demo.ipynb`.
+
+This keeps the demo path close to the reusable MPM implementation instead of maintaining a second repository whose main purpose is package verification.
