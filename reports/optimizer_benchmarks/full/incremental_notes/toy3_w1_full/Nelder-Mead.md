@@ -1,12 +1,12 @@
 # Optimization Notes: toy3_w1_full / Nelder-Mead
 
-- Total runs so far: 4
+- Total runs so far: 3
 - Feasible runs so far: 0
 - Best feasible objective: n/a
 
 ## Failure modes observed
 
-timeout: 4
+timeout: 3
 
 ## Recent runs
 
@@ -15,4 +15,3 @@ timeout: 4
 |            0 |     11 | zero             | False     | False      | True      |              inf |             5 | timeout   |
 |            1 |     24 | gaussian_0       | False     | False      | True      |              inf |             5 | timeout   |
 |            2 |     37 | sparse_0         | False     | False      | True      |              inf |             5 | timeout   |
-|            3 |     50 | gaussian_1       | False     | False      | True      |              inf |             5 | timeout   |
