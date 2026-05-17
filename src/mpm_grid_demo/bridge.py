@@ -15,7 +15,7 @@ class StateSpaceModelMap:
     """Minimal MPM-compatible model map for ``M(s)=C(sI-A)^{-1}B+D``.
 
     The standalone ANDES demo originally targeted a future/alternate
-    ``masked_perturbation_model.lft.build_model_map`` API.  The current
+    ``mpmgame.lft.build_model_map`` API.  The current
     repository branch does not expose that import path, so this light wrapper
     keeps the verification notebook executable while preserving the same public
     dimensions and ``eval(s)`` behavior expected by the demo workflow.
@@ -58,13 +58,13 @@ def build_lft_from_linear_model(linear_model: LinearModel, channels: ChannelSele
     """Build an MPM-compatible model map ``M : w -> r`` from demo state-space data.
 
     If a future/full core API exposing
-    ``masked_perturbation_model.lft.build_model_map`` is available, this helper
+    ``mpmgame.lft.build_model_map`` is available, this helper
     will use it.  Otherwise it returns :class:`StateSpaceModelMap`, which
     supports the verification notebook's dimension checks and frequency-domain
     evaluation directly.
     """
     try:
-        from masked_perturbation_model.lft import build_model_map
+        from mpmgame.lft import build_model_map
     except ImportError:
         return _fallback_model_map(linear_model, channels)
 

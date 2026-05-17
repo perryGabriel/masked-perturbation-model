@@ -34,19 +34,7 @@ from .core import (
 )
 from .examples import paper_example_data, run_paper_example, coordinated_attack_defeats_all
 from .plotting import plot_success_bipartite_graph, plot_payoff_heatmap
-from .stackelberg import (
-    StackelbergMask,
-    StackelbergAttack,
-    StackelbergInstance,
-    StackelbergOutcome,
-    feasible_mask_indices,
-    attacker_best_response_to_mixed,
-    attacker_best_response_to_pure,
-    solve_stackelberg_mixed,
-    solve_stackelberg_pure,
-    strategy_table,
-    export_stackelberg_outcome,
-)
+
 
 __all__ = [
     "AttackAction",
@@ -164,17 +152,6 @@ __all__ = [
     "select_defense_subset_greedy",
     "select_defense_subset_random",
     "evaluate_mixed_defense_subset",
-    "StackelbergMask",
-    "StackelbergAttack",
-    "StackelbergInstance",
-    "StackelbergOutcome",
-    "feasible_mask_indices",
-    "attacker_best_response_to_mixed",
-    "attacker_best_response_to_pure",
-    "solve_stackelberg_mixed",
-    "solve_stackelberg_pure",
-    "strategy_table",
-    "export_stackelberg_outcome",
 ]
 
 
@@ -245,31 +222,3 @@ serialize_dynamic_q_for_row_dsf = serialize_dynamic_q_for_row
 deserialize_dynamic_q_from_row_dsf = deserialize_dynamic_q_from_row
 
 
-from .simultaneous_attacks import (
-    MaskDefense,
-    AttackCandidate,
-    SimultaneousProblem,
-    SimultaneousAnalysisResult,
-    destabilizes,
-    evaluate_attack_against_masks,
-    cross_success_matrix,
-    support_overlap_matrix,
-    dominance_relations,
-    additive_combination_search,
-    analyze_simultaneous_attacks,
-    write_analysis_outputs,
-)
-
-
-from .mixed_defense import (
-    MixedDefenseWeights,
-    MixedDefenseObjectiveComponents,
-    MixedDefenseSelection,
-    MixedDefenseEvaluation,
-    defense_success_sets,
-    mixed_defense_objective_components,
-    mixed_defense_objective,
-    select_defense_subset_greedy,
-    select_defense_subset_random,
-    evaluate_mixed_defense_subset,
-)
