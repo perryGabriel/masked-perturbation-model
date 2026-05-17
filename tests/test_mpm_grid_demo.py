@@ -3,7 +3,6 @@ from __future__ import annotations
 import importlib
 
 import numpy as np
-import pytest
 
 
 def test_mpm_grid_demo_package_can_be_imported():
@@ -33,9 +32,7 @@ def test_random_channel_selection_is_dimensionally_consistent():
     assert channels.D_rw.shape == (2, 2)
 
 
-def test_bridge_constructs_core_model_map_when_core_lft_api_is_available():
-    pytest.importorskip("masked_perturbation_model.lft")
-
+def test_bridge_constructs_model_map_with_frequency_eval():
     from mpm_grid_demo.bridge import build_lft_from_linear_model
     from mpm_grid_demo.channels import select_random_channels
     from mpm_grid_demo.linearize import synthetic_two_area_like_model
